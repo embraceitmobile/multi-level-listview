@@ -1,27 +1,27 @@
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 
-abstract class IterableTree<T extends Node<T>> {
+abstract class IterableTree<T extends TreeNode> {
   external factory IterableTree();
 
-  external factory IterableTree.from(List<Node<T>> list);
-
-  Node<T> get root;
+  T get root;
 
   void add(T value, {String path});
 
-  void addAll(Iterable<T> iterable, {String path});
+  void addAll(List<T> iterable, {String path});
 
   void remove(T value);
 
-  void removeItems(Iterable<Node<T>> iterable);
+  void removeItems(List<T> iterable);
 
-  Iterable<Node<T>> clearAll({String path});
+  Iterable<T> clearAll({String path});
 }
 
-abstract class InsertableIterableTree<T extends Node<T>> with IterableTree<T> {
+abstract class InsertableIterableTree<T extends TreeNode>
+    with IterableTree<T> {
   external factory InsertableIterableTree();
 
-  external factory InsertableIterableTree.from(List<Node<T>> list);
+  external factory InsertableIterableTree.from(List<ListNode<T>> list);
 
   void insert(T value, int index, {String path});
 

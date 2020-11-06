@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 
-abstract class IterableTreeUpdateProvider<T extends Node<T>> {
+abstract class IterableTreeUpdateProvider<T extends TreeNode> {
   final StreamController<NodeEvent<T>> _addedItemsController =
       StreamController<NodeEvent<T>>.broadcast();
 
@@ -41,7 +42,7 @@ abstract class IterableTreeUpdateProvider<T extends Node<T>> {
   }
 }
 
-class NodeEvent<T extends Node<T>> {
+class NodeEvent<T extends TreeNode> {
   final List<T> items;
   final int index;
   final String path;

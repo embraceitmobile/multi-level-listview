@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
 
-extension NodeList<T extends _Node<T>> on List<_Node<T>> {
-  Node<T> get firstNode => this.first.populateChildrenPath();
+extension NodeList<T extends TreeNode> on List<TreeNode> {
+  ListNode<T> get firstNode => this.first.populateChildrenPath();
 
-  Node<T> get lastNode => this.last.populateChildrenPath();
+  ListNode<T> get lastNode => this.last.populateChildrenPath();
 
-  Node<T> at(int index) => this[index].populateChildrenPath();
+  ListNode<T> at(int index) => this[index].populateChildrenPath();
 
   //TODO: optimize this method, it is simply getting the first element in a loop
-  Node<T> firstNodeWhere(bool test(T element), {T orElse()}) =>
+  ListNode<T> firstNodeWhere(bool test(T element), {T orElse()}) =>
       this.firstWhere((e) => test(e), orElse: orElse).populateChildrenPath();
 
   //TODO: optimize this method, it is simply getting the last element in a loop
-  Node<T> lastNodeWhere(bool Function(T element) test, {T Function() orElse}) =>
+  ListNode<T> lastNodeWhere(bool Function(T element) test,
+          {T Function() orElse}) =>
       this.lastWhere((e) => test(e), orElse: orElse).populateChildrenPath();
 
   int nodeIndexWhere(bool Function(T element) test, [int start = 0]) {
@@ -22,18 +24,18 @@ extension NodeList<T extends _Node<T>> on List<_Node<T>> {
   }
 }
 
-class RootNode<T extends Node<T>> with Node<T> {
-  final List<Node<T>> children;
+class RootListNode<T extends TreeNode> with ListNode<T> {
+  final List<ListNode<T>> children;
   final String key;
 
-  RootNode(this.children) : this.key = Node.ROOT_KEY;
+  RootListNode(this.children) : this.key = ListNode.ROOT_KEY;
 }
 
-mixin Node<T extends _Node<T>> implements _Node<T> {
+mixin ListNode<T extends TreeNode> implements _ListNode<T>, TreeNode {
   static const PATH_SEPARATOR = ".";
   static const ROOT_KEY = "/";
 
-  List<Node<T>> get children;
+  List<ListNode<T>> get children;
 
   /// [key] should be unique, if you are overriding it then make sure that it has a unique value
   final String key = UniqueKey().toString();
@@ -46,13 +48,13 @@ mixin Node<T extends _Node<T>> implements _Node<T> {
 
   int get level => PATH_SEPARATOR.allMatches(path).length - 1;
 
-  String get childrenPath => "$path${Node.PATH_SEPARATOR}$key";
+  String get childrenPath => "$path${ListNode.PATH_SEPARATOR}$key";
 
-  Node<T> getNodeAt(String path) {
+  ListNode<T> getNodeAt(String path) {
     assert(key != ROOT_KEY ? !path.contains(ROOT_KEY) : true,
         "Path with ROOT_KEY = $ROOT_KEY can only be called from the root node");
 
-    final nodes = Node.normalizePath(path).split(PATH_SEPARATOR);
+    final nodes = ListNode.normalizePath(path).split(PATH_SEPARATOR);
 
     var currentNode = this;
     for (final node in nodes) {
@@ -65,7 +67,7 @@ mixin Node<T extends _Node<T>> implements _Node<T> {
     return currentNode;
   }
 
-  Node<T> populateChildrenPath({bool refresh = false}) {
+  ListNode<T> populateChildrenPath({bool refresh = false}) {
     if (children.isEmpty) return this;
     if (!refresh && children.first.path.isNotEmpty) return this;
     for (final child in children) {
@@ -87,7 +89,7 @@ mixin Node<T extends _Node<T>> implements _Node<T> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Node && key == other.key;
+      identical(this, other) || other is ListNode && key == other.key;
 
   @override
   int get hashCode => key.hashCode;
@@ -98,19 +100,18 @@ mixin Node<T extends _Node<T>> implements _Node<T> {
   }
 }
 
-mixin _Node<T> {
-  String get key;
+mixin _ListNode<T> implements TreeNode {
 
-  String path;
+  List<_ListNode<T>> get children;
 
-  List<_Node<T>> get children;
-
-  _Node<T> populateChildrenPath({bool refresh});
+  _ListNode<T> populateChildrenPath({bool refresh});
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is _Node && runtimeType == other.runtimeType && key == other.key;
+      other is _ListNode &&
+          runtimeType == other.runtimeType &&
+          key == other.key;
 
   @override
   int get hashCode => key.hashCode;

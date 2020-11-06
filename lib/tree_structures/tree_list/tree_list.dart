@@ -1,8 +1,8 @@
 import 'package:multi_level_list_view/interfaces/iterable_tree.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 
-class TreeList<T extends Node<T>> implements InsertableIterableTree<T> {
-  TreeList._(RootNode<T> root) : _root = root {
+class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
+  TreeList._(RootListNode<T> root) : _root = root {
     if (_root.hasChildren) {
       for (final node in _root.children) {
         node.path = _root.childrenPath;
@@ -10,15 +10,15 @@ class TreeList<T extends Node<T>> implements InsertableIterableTree<T> {
     }
   }
 
-  RootNode<T> _root;
+  RootListNode<T> _root;
 
-  Node<T> get root => _root;
+  T get root => _root as T;
 
-  List<Node<T>> get children => _root.children;
+  List<ListNode<T>> get children => _root.children;
 
-  factory TreeList() => TreeList._(RootNode(<T>[]));
+  factory TreeList() => TreeList._(RootListNode(<T>[]));
 
-  factory TreeList.from(List<Node<T>> list) => TreeList._(RootNode(list));
+  factory TreeList.from(List<ListNode<T>> list) => TreeList._(RootListNode(list));
 
   void add(T element, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
@@ -83,7 +83,7 @@ class TreeList<T extends Node<T>> implements InsertableIterableTree<T> {
     node.children.remove(value);
   }
 
-  void removeItems(Iterable<Node<T>> iterable, {String path}) {
+  void removeItems(List<ListNode<T>> iterable, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
 
     for (final item in iterable) {
@@ -98,7 +98,7 @@ class TreeList<T extends Node<T>> implements InsertableIterableTree<T> {
     return item;
   }
 
-  Iterable<Node<T>> clearAll({String path}) {
+  List<T> clearAll({String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     final items = List.of(node.children, growable: false);
     node.children.clear();

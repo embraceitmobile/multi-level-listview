@@ -1,24 +1,22 @@
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
 import 'package:multi_level_list_view/interfaces/iterable_tree.dart';
 import 'package:multi_level_list_view/interfaces/listenable_iterable_tree.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_map/map_node.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
-abstract class MultiLevelListViewController<T extends Node<T>>
+abstract class MultiLevelListViewController<T extends TreeNode>
     implements IterableTree<T> {
   void attach(
       {IterableTree<T> tree,
       AnimatedListController listController,
       AutoScrollController scrollController});
 
-  void scrollToItem(T item);
-
-  void scrollToIndex(int index);
-
   void toggleNodeExpandCollapse(T item);
 }
 
-class EfficientMultiLevelListViewController<T extends Node<T>>
+class EfficientMultiLevelListViewController<T extends TreeNode>
     implements MultiLevelListViewController<T> {
   ListenableIterableTree<T> _listenableTree;
   AnimatedListController _listController;
@@ -36,39 +34,42 @@ class EfficientMultiLevelListViewController<T extends Node<T>>
   }
 
   @override
-  Node<T> get root => _listenableTree.root;
+  void add(T value, {String path}) {
+    // TODO: implement add
+  }
 
   @override
-  void add(T value, {String path}) => _listenableTree.add(value, path: path);
+  void addAll(Iterable<T> iterable, {String path}) {
+    // TODO: implement addAll
+  }
 
   @override
-  void addAll(Iterable<T> iterable, {String path}) =>
-      _listenableTree.addAll(iterable, path: path);
+  Iterable<T> clearAll({String path}) {
+    // TODO: implement clearAll
+    throw UnimplementedError();
+  }
 
   @override
-  Iterable<Node<T>> clearAll({String path}) =>
-      _listenableTree.clearAll(path: path);
+  void remove(T value) {
+    // TODO: implement remove
+  }
 
   @override
-  void remove(T value) => _listenableTree.remove(value);
+  void removeItems(Iterable<T> iterable) {
+    // TODO: implement removeItems
+  }
 
   @override
-  void removeItems(Iterable<Node<T>> iterable) =>
-      _listenableTree.removeItems(iterable);
+  // TODO: implement root
+  T get root => throw UnimplementedError();
 
   @override
-  void scrollToIndex(int index) => _scrollController.scrollToIndex(index);
-
-  @override
-  void scrollToItem(T item) =>
-      _scrollController.scrollToIndex(_listController.indexOf(item));
-
-  @override
-  void toggleNodeExpandCollapse(T item) =>
-      _listController.toggleExpansion(item);
+  void toggleNodeExpandCollapse(T item) {
+    // TODO: implement toggleNodeExpandCollapse
+  }
 }
 
-class InsertableMultiLevelListViewController<T extends Node<T>>
+class InsertableMultiLevelListViewController<T extends TreeNode>
     implements MultiLevelListViewController<T>, InsertableIterableTree<T> {
   ListenableInsertableIterableTree<T> _listenableTree;
   AnimatedListController _listController;
@@ -86,7 +87,7 @@ class InsertableMultiLevelListViewController<T extends Node<T>>
   }
 
   @override
-  Node<T> get root => _listenableTree.root;
+  T get root => _listenableTree.root;
 
   @override
   void add(T value, {String path}) => _listenableTree.add(value, path: path);
@@ -127,21 +128,20 @@ class InsertableMultiLevelListViewController<T extends Node<T>>
       _listenableTree.removeAt(index, path: path);
 
   @override
-  void removeItems(Iterable<Node<T>> iterable) =>
+  void removeItems(Iterable<T> iterable) =>
       _listenableTree.removeItems(iterable);
 
   @override
-  Iterable<Node<T>> clearAll({String path}) =>
-      _listenableTree.clearAll(path: path);
+  Iterable<T> clearAll({String path}) => _listenableTree.clearAll(path: path);
 
-  @override
   void scrollToIndex(int index) => _scrollController.scrollToIndex(index);
 
-  @override
   void scrollToItem(T item) =>
       _scrollController.scrollToIndex(_listController.indexOf(item));
 
   @override
   void toggleNodeExpandCollapse(T item) =>
       _listController.toggleExpansion(item);
+
+
 }

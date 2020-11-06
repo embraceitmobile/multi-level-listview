@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:multi_level_list_view/interfaces/iterable_tree_update_provider.dart';
 import 'package:multi_level_list_view/interfaces/listenable_iterable_tree.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 import 'package:multi_level_list_view/tree_structures/tree_list/tree_list.dart';
 
-class ListenableTreeList<T extends Node<T>> extends ChangeNotifier
+class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
     with IterableTreeUpdateProvider<T>
     implements ListenableIterableTree<T>, ListenableInsertableIterableTree<T> {
   ListenableTreeList._(TreeList<T> list) : _value = list;
 
   factory ListenableTreeList() => ListenableTreeList._(TreeList<T>());
 
-  factory ListenableTreeList.from(List<Node<T>> list) =>
+  factory ListenableTreeList.from(List<TreeNode> list) =>
       ListenableTreeList._(TreeList.from(list));
 
   final TreeList<T> _value;
@@ -22,7 +23,7 @@ class ListenableTreeList<T extends Node<T>> extends ChangeNotifier
   TreeList<T> get value => _value;
 
   @override
-  Node<T> get root => _value.root;
+  T get root => _value.root;
 
   @override
   void add(T item, {String path}) {
@@ -100,14 +101,14 @@ class ListenableTreeList<T extends Node<T>> extends ChangeNotifier
   }
 
   @override
-  void removeItems(Iterable<Node<T>> iterable, {String path}) {
+  void removeItems(Iterable<ListNode<T>> iterable, {String path}) {
     _value.removeItems(iterable, path: path);
     notifyListeners();
     emitRemoveItems(iterable, path: path);
   }
 
   @override
-  Iterable<Node<T>> clearAll({String path}) {
+  List<T> clearAll({String path}) {
     final clearedItems = _value.clearAll(path: path);
     notifyListeners();
     emitRemoveItems(clearedItems, path: path);

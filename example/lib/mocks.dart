@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:multi_level_list_view/multi_level_list_view.dart';
 
-class RowItem with Node<RowItem> {
+class RowItem with ListNode<RowItem> {
   final List<RowItem> children;
   final int index;
 

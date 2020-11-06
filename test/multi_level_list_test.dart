@@ -27,8 +27,8 @@ void main() {
       () async {
     final treeList = TreeList.from(List.of(itemsWithIds));
     final nodes = treeList.children;
-    final _ = Node.PATH_SEPARATOR;
-    final root = "$_${Node.ROOT_KEY}";
+    final _ = ListNode.PATH_SEPARATOR;
+    final root = "$_${ListNode.ROOT_KEY}";
 
     expect(nodes.firstNode.key, equals("0A"));
     expect(nodes.firstNode.children.firstNode.path, equals("$root${_}0A"));
@@ -45,7 +45,7 @@ void main() {
   test('get the correct node from path', () async {
     final treeList = TreeList.from(List.of(itemsWithIds));
     final rootNode = treeList.root;
-    final _ = Node.PATH_SEPARATOR;
+    final _ = ListNode.PATH_SEPARATOR;
     final testNode = treeList.children
         .at(2)
         .children
@@ -55,22 +55,22 @@ void main() {
         .children
         .firstNode;
 
-    final testPath = "$_${Node.ROOT_KEY}${_}0C${_}0C1C${_}0C1C2A${_}0C1C2A3A";
+    final testPath = "$_${ListNode.ROOT_KEY}${_}0C${_}0C1C${_}0C1C2A${_}0C1C2A3A";
     final returnedNode = rootNode.getNodeAt(testPath);
 
     expect(returnedNode.key, equals(testNode.key),
         reason:
-            "getNodeAt handles path starting with PATH_SEPARATOR = $_ and ROOT_KEY = ${Node.ROOT_KEY}");
+            "getNodeAt handles path starting with PATH_SEPARATOR = $_ and ROOT_KEY = ${ListNode.ROOT_KEY}");
 
-    final testPath2 = "${Node.ROOT_KEY}${_}0C${_}0C1C${_}0C1C2A${_}0C1C2A3A";
+    final testPath2 = "${ListNode.ROOT_KEY}${_}0C${_}0C1C${_}0C1C2A${_}0C1C2A3A";
     final returnedNode2 = rootNode.getNodeAt(testPath2);
     expect(returnedNode2.key, equals(testNode.key),
-        reason: "getNodeAt handles path starting with ROOT_KEY = ${Node.ROOT_KEY}");
+        reason: "getNodeAt handles path starting with ROOT_KEY = ${ListNode.ROOT_KEY}");
 
     final testPath3 = "0C${_}0C1C${_}0C1C2A${_}0C1C2A3A";
     final returnedNode3 = rootNode.getNodeAt(testPath3);
     expect(returnedNode3.key, equals(testNode.key),
         reason:
-            "getNodeAt handles path starting without ROOT_KEY = ${Node.ROOT_KEY} and PATH_SEPARATOR = $_");
+            "getNodeAt handles path starting without ROOT_KEY = ${ListNode.ROOT_KEY} and PATH_SEPARATOR = $_");
   });
 }

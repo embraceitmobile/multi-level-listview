@@ -5,14 +5,15 @@ import 'package:multi_level_list_view/controllers/animated_list_controller.dart'
 import 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
 import 'package:multi_level_list_view/interfaces/iterable_tree_update_provider.dart';
 import 'package:multi_level_list_view/interfaces/listenable_iterable_tree.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 import 'package:multi_level_list_view/tree_structures/tree_list/listenable_tree_list.dart';
 import 'package:multi_level_list_view/tree_structures/tree_list/tree_list.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 export 'package:multi_level_list_view/tree_structures/tree_list/tree_list.dart';
-export 'package:multi_level_list_view/tree_structures/node.dart';
+export 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 export 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
 
 typedef LeveledIndexedWidgetBuilder<T> = Widget Function(
@@ -24,7 +25,7 @@ const DEFAULT_EXPAND_ICON = const Icon(Icons.keyboard_arrow_down);
 const DEFAULT_COLLAPSE_ICON = const Icon(Icons.keyboard_arrow_up);
 const DEFAULT_SHOW_EXPANSION_INDICATOR = true;
 
-class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
+class MultiLevelListView<T extends TreeNode> extends StatefulWidget {
   final ListenableIterableTree<T> listenableTree;
   final LeveledIndexedWidgetBuilder<T> builder;
   final MultiLevelListViewController<T> controller;
@@ -120,7 +121,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   State<StatefulWidget> createState() => _MultiLevelListView<T>();
 }
 
-class _MultiLevelListView<T extends Node<T>>
+class _MultiLevelListView<T extends TreeNode>
     extends State<MultiLevelListView<T>> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   AnimatedListController<T> _animatedListController;
@@ -164,7 +165,7 @@ class _MultiLevelListView<T extends Node<T>>
   }
 
   /// Used to build list items that haven't been removed.
-  Widget _buildItem(Node<T> item, Animation<double> animation,
+  Widget _buildItem(TreeNode item, Animation<double> animation,
       {bool remove = false, int index}) {
     final itemContainer = ListItemContainer(
       animation: animation,

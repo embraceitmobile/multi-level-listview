@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/interfaces/iterable_tree_update_provider.dart';
 import 'package:multi_level_list_view/interfaces/listenable_iterable_tree.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
 import 'package:multi_level_list_view/listenables/listenable_list.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 
-class AnimatedListController<T extends Node<T>> {
+class AnimatedListController<T extends TreeNode> {
   static const TAG = "AnimatedListController";
 
   final GlobalKey<AnimatedListState> _listKey;
   final ListenableIterableTree<T> _listenableIterableTree;
   final dynamic _removedItemBuilder;
-  final ListenableList<Node<T>> _items;
+  final ListenableList<TreeNode> _items;
 
   AnimatedListController(
       {@required GlobalKey<AnimatedListState> listKey,
@@ -29,7 +30,7 @@ class AnimatedListController<T extends Node<T>> {
     }
   }
 
-  ListenableList<Node<T>> get list => _items;
+  ListenableList<ListNode<T>> get list => _items;
 
   int get length => _items.length;
 
@@ -38,18 +39,18 @@ class AnimatedListController<T extends Node<T>> {
   int indexOf(T item) =>
       _items.nodeIndexWhere((e) => e.path == item.path && e.key == item.key);
 
-  void insert(int index, Node<T> item) {
+  void insert(int index, TreeNode item) {
     _items.insert(index, item);
     _animatedList.insertItem(index);
   }
 
-  void insertAll(int index, List<Node<T>> items) {
+  void insertAll(int index, List<TreeNode> items) {
     for (int i = 0; i < items.length; i++) {
       insert(index + i, items[i]);
     }
   }
 
-  Node<T> removeAt(int index) {
+  TreeNode removeAt(int index) {
     final removedItem = _items.removeAt(index);
     if (removedItem != null) {
       _animatedList.removeItem(
@@ -61,40 +62,40 @@ class AnimatedListController<T extends Node<T>> {
     return removedItem;
   }
 
-  void remove(Node<T> item) => removeAt(indexOf(item));
+  void remove(TreeNode item) => removeAt(indexOf(item));
 
-  void removeAll(List<Node<T>> items) {
+  void removeAll(List<TreeNode> items) {
     for (final item in items) {
       item.isExpanded = false;
       Future.microtask(() => removeAt(indexOf(item)));
     }
   }
 
-  List<Node<T>> childrenAt([String path]) {
+  List<TreeNode> childrenAt([String path]) {
     if (path?.isEmpty ?? true) return _items.value;
     var children = _items.value;
-    var nodes = Node.normalizePath(path).split(Node.PATH_SEPARATOR);
+    var nodes = ListNode.normalizePath(path).split(ListNode.PATH_SEPARATOR);
     for (final node in nodes) {
       children = children.firstWhere((element) => node == element.key).children;
     }
     return children;
   }
 
-  void collapseNode(Node<T> item) {
+  void collapseNode(TreeNode item) {
     final removeItems = _items.where((element) => element.path
-        .startsWith('${item.path}${Node.PATH_SEPARATOR}${item.key}'));
+        .startsWith('${item.path}${ListNode.PATH_SEPARATOR}${item.key}'));
 
     removeAll(removeItems.toList());
     item.isExpanded = false;
   }
 
-  void expandNode(Node<T> item) {
+  void expandNode(TreeNode item) {
     if (item.children.isEmpty) return;
     insertAll(indexOf(item) + 1, item.children);
     item.isExpanded = true;
   }
 
-  void toggleExpansion(Node<T> item) {
+  void toggleExpansion(TreeNode item) {
     if (item.isExpanded)
       collapseNode(item);
     else
@@ -103,7 +104,7 @@ class AnimatedListController<T extends Node<T>> {
 
   @visibleForTesting
   void handleAddItemsEvent(NodeEvent<T> event) {
-    final parentKey = event.path.split(Node.PATH_SEPARATOR).last;
+    final parentKey = event.path.split(ListNode.PATH_SEPARATOR).last;
     final parentIndex =
         _items.indexWhere((element) => element.key == parentKey);
     final parentNode = _items[parentIndex];
@@ -147,7 +148,7 @@ class AnimatedListController<T extends Node<T>> {
         }
       }
       // if item is not in the root list, then remove its value from the _items
-      if (Node.normalizePath(item.path).isNotEmpty ?? false) {
+      if (ListNode.normalizePath(item.path).isNotEmpty ?? false) {
         childrenAt(item.path).remove(item);
       }
     }

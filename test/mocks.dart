@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:multi_level_list_view/multi_level_list_view.dart';
 
-class NodeWithGivenId with Node<NodeWithGivenId> {
+class NodeWithGivenId with ListNode<NodeWithGivenId> {
   final String key;
   final List<NodeWithGivenId> children;
 
@@ -11,7 +11,7 @@ class NodeWithGivenId with Node<NodeWithGivenId> {
   });
 }
 
-class TestNode with Node<TestNode> {
+class TestNode with ListNode<TestNode> {
   final List<TestNode> children;
 
   TestNode({List<TestNode> children})
