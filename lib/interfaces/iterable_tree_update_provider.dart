@@ -25,7 +25,7 @@ abstract class IterableTreeUpdateProvider<T extends TreeNode> {
   }
 
   @protected
-  void emitRemoveItems(Iterable<T> iterable, {String path}) {
+  void emitRemoveItems(Iterable<TreeNode> iterable, {String path}) {
     _removedItemsController.sink.add(NodeEvent(iterable, path: path));
   }
 

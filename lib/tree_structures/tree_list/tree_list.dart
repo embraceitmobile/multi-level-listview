@@ -1,4 +1,5 @@
 import 'package:multi_level_list_view/interfaces/iterable_tree.dart';
+import 'package:multi_level_list_view/interfaces/tree_node.dart';
 import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 
 class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
@@ -12,21 +13,22 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
 
   RootListNode<T> _root;
 
-  T get root => _root as T;
+  ListNode<T> get root => _root;
 
   List<ListNode<T>> get children => _root.children;
 
   factory TreeList() => TreeList._(RootListNode(<T>[]));
 
-  factory TreeList.from(List<ListNode<T>> list) => TreeList._(RootListNode(list));
+  factory TreeList.from(List<ListNode<T>> list) =>
+      TreeList._(RootListNode(list));
 
-  void add(T element, {String path}) {
+  void add(TreeNode element, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     node.children.add(element);
     node.populateChildrenPath(refresh: true);
   }
 
-  void addAll(Iterable<T> iterable, {String path}) {
+  void addAll(Iterable<TreeNode> iterable, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     node.children.addAll(iterable);
     node.populateChildrenPath(refresh: true);
@@ -78,12 +80,12 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
     return index;
   }
 
-  void remove(T value, {String path}) {
+  void remove(TreeNode value, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     node.children.remove(value);
   }
 
-  void removeItems(List<ListNode<T>> iterable, {String path}) {
+  void removeItems(List<TreeNode> iterable, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
 
     for (final item in iterable) {
@@ -98,7 +100,7 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
     return item;
   }
 
-  List<T> clearAll({String path}) {
+  List<TreeNode> clearAll({String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     final items = List.of(node.children, growable: false);
     node.children.clear();

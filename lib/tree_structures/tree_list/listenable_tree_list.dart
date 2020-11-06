@@ -23,17 +23,17 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   TreeList<T> get value => _value;
 
   @override
-  T get root => _value.root;
+  ListNode<T> get root => _value.root;
 
   @override
-  void add(T item, {String path}) {
+  void add(TreeNode item, {String path}) {
     _value.add(item, path: path);
     notifyListeners();
     emitAddItems([item], path: path);
   }
 
   @override
-  void addAll(Iterable<T> iterable, {String path}) {
+  void addAll(Iterable<TreeNode> iterable, {String path}) {
     _value.addAll(iterable, path: path);
     notifyListeners();
     emitAddItems(iterable, path: path);
@@ -86,7 +86,7 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   }
 
   @override
-  void remove(T value, {String path}) {
+  void remove(TreeNode value, {String path}) {
     _value.remove(value, path: path);
     notifyListeners();
     emitRemoveItems([value], path: path);
@@ -101,14 +101,14 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   }
 
   @override
-  void removeItems(Iterable<ListNode<T>> iterable, {String path}) {
+  void removeItems(Iterable<TreeNode> iterable, {String path}) {
     _value.removeItems(iterable, path: path);
     notifyListeners();
     emitRemoveItems(iterable, path: path);
   }
 
   @override
-  List<T> clearAll({String path}) {
+  List<TreeNode> clearAll({String path}) {
     final clearedItems = _value.clearAll(path: path);
     notifyListeners();
     emitRemoveItems(clearedItems, path: path);

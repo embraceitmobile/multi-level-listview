@@ -34,12 +34,12 @@ class EfficientMultiLevelListViewController<T extends TreeNode>
   }
 
   @override
-  void add(T value, {String path}) {
+  void add(TreeNode value, {String path}) {
     // TODO: implement add
   }
 
   @override
-  void addAll(Iterable<T> iterable, {String path}) {
+  void addAll(Iterable<TreeNode> iterable, {String path}) {
     // TODO: implement addAll
   }
 
@@ -50,12 +50,12 @@ class EfficientMultiLevelListViewController<T extends TreeNode>
   }
 
   @override
-  void remove(T value) {
+  void remove(TreeNode value) {
     // TODO: implement remove
   }
 
   @override
-  void removeItems(Iterable<T> iterable) {
+  void removeItems(Iterable<TreeNode> iterable) {
     // TODO: implement removeItems
   }
 
@@ -90,14 +90,14 @@ class InsertableMultiLevelListViewController<T extends TreeNode>
   T get root => _listenableTree.root;
 
   @override
-  void add(T value, {String path}) => _listenableTree.add(value, path: path);
+  void add(TreeNode value, {String path}) => _listenableTree.add(value, path: path);
 
   @override
-  void addAll(Iterable<T> iterable, {String path}) =>
+  void addAll(Iterable<TreeNode> iterable, {String path}) =>
       _listenableTree.addAll(iterable, path: path);
 
   @override
-  void insert(T value, int index, {String path}) =>
+  void insert(TreeNode value, int index, {String path}) =>
       _listenableTree.insert(value, index, path: path);
 
   @override
@@ -121,14 +121,14 @@ class InsertableMultiLevelListViewController<T extends TreeNode>
       _listenableTree.insertAllAfter(iterable, itemAfter, path: path);
 
   @override
-  void remove(T value) => _listenableTree.remove(value);
+  void remove(TreeNode value) => _listenableTree.remove(value);
 
   @override
-  T removeAt(int index, {String path}) =>
+  TreeNode removeAt(int index, {String path}) =>
       _listenableTree.removeAt(index, path: path);
 
   @override
-  void removeItems(Iterable<T> iterable) =>
+  void removeItems(Iterable<TreeNode> iterable) =>
       _listenableTree.removeItems(iterable);
 
   @override

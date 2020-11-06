@@ -4,17 +4,17 @@ import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
 abstract class IterableTree<T extends TreeNode> {
   external factory IterableTree();
 
-  T get root;
+  TreeNode get root;
 
-  void add(T value, {String path});
+  void add(TreeNode value, {String path});
 
-  void addAll(List<T> iterable, {String path});
+  void addAll(List<TreeNode> iterable, {String path});
 
-  void remove(T value);
+  void remove(TreeNode value);
 
-  void removeItems(List<T> iterable);
+  void removeItems(List<TreeNode> iterable);
 
-  Iterable<T> clearAll({String path});
+  Iterable<TreeNode> clearAll({String path});
 }
 
 abstract class InsertableIterableTree<T extends TreeNode>
@@ -35,5 +35,5 @@ abstract class InsertableIterableTree<T extends TreeNode>
 
   int insertAllBefore(Iterable<T> iterable, T itemBefore, {String path});
 
-  T removeAt(int index, {String path});
+  TreeNode removeAt(int index, {String path});
 }

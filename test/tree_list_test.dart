@@ -16,11 +16,11 @@ void main() {
     });
 
     test('on adding an item at path, the length of list increases', () async {
-      final lengthOrigChild = items.children.firstNode.children.length;
       final path = items.children.firstNode.path;
+      final lengthOrigChild = items.root.getNodeAt(path).children.length;
+
       items.add(TestNode(), path: path);
-      expect(items.children.firstNode.children.length,
-          equals(lengthOrigChild + 1));
+      expect(items.children.length, equals(lengthOrigChild + 1));
     });
   });
 
@@ -34,11 +34,11 @@ void main() {
     });
 
     test('on adding items at path, the length of list increases', () async {
-      final lengthOrigChild = items.children.firstNode.children.length;
+      final lengthOrigChild = items.children.length;
       final path = items.children.firstNode.path;
       items.addAll(itemsToAdd, path: path);
-      expect(items.children.firstNode.children.length,
-          equals(lengthOrigChild + itemsToAdd.length));
+      expect(
+          items.children.length, equals(lengthOrigChild + itemsToAdd.length));
     });
   });
 
@@ -57,9 +57,9 @@ void main() {
         'on inserting items at path, the items at and after the index are updated,'
         ' and the length of list increases', () async {
       final node = items.children.firstNode;
-      final origLength = node.children.length;
       final itemToInsert = TestNode();
-      final path = node.path;
+      final path = node.childrenPath;
+      final origLength = items.root.getNodeAt(path).children.length;
       final insertAt = 0;
       items.insert(itemToInsert, insertAt, path: path);
       expect(items.root.getNodeAt(path).children[insertAt].key,
@@ -85,10 +85,11 @@ void main() {
         'on inserting items at path, the items at and after the index are updated,'
         ' and the length of list increases', () async {
       final node = items.children.firstNode;
-      final origLength = node.children.length;
       final itemsToInsert = [TestNode(), TestNode()];
       final path = node.path;
       final insertAt = 0;
+      final origLength = items.root.getNodeAt(path).children.length;
+
       items.insertAll(itemsToInsert, insertAt, path: path);
       expect(items.root.getNodeAt(path).children[insertAt].key,
           equals(itemsToInsert.first.key));
@@ -109,12 +110,15 @@ void main() {
 
     test('on removing an item at path, the length of list increases', () async {
       final node = items.children.firstNode;
-      final origLength = node.children.length;
       final itemToRemove = node.children.firstNode;
-      final path = node.path;
+      final path = node.childrenPath;
+      final origLength = items.root.getNodeAt(path).children.length;
+
       items.remove(itemToRemove, path: path);
-      expect(node.children.contains(itemToRemove), isFalse);
-      expect(node.children.length, equals(origLength - 1));
+      expect(
+          items.root.getNodeAt(path).children.contains(itemToRemove), isFalse);
+      expect(
+          items.root.getNodeAt(path).children.length, equals(origLength - 1));
     });
   });
 
@@ -159,7 +163,7 @@ void main() {
       final node = items.children.firstNode;
       final origLength = node.children.length;
       final itemToRemove = 0;
-      final path = node.path;
+      final path = node.childrenPath;
       items.removeAt(itemToRemove, path: path);
       expect(node.children.contains(itemToRemove), isFalse);
       expect(node.children.length, equals(origLength - 1));
@@ -169,7 +173,7 @@ void main() {
   group('test clear method', () {
     test('on clearing a list, the list length is zero', () async {
       items.clearAll();
-      expect(items.children.isEmpty, isTrue);
+      expect(items.root.children.isEmpty, isTrue);
     });
 
     test('on clearing a list at a path, the list length is zero at that path',
@@ -177,7 +181,7 @@ void main() {
       final node = items.children.firstNode;
       final path = node.path;
       items.clearAll(path: path);
-      expect(node.children.isEmpty, isTrue);
+      expect(items.root.getNodeAt(path).children.isEmpty, isTrue);
     });
   });
 }
