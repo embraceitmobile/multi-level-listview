@@ -34,13 +34,13 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
     node.populateChildrenPath(refresh: true);
   }
 
-  void insert(T element, int index, {String path}) {
+  void insert(TreeNode element, int index, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     node.children.insert(index, element);
     node.populateChildrenPath(refresh: true);
   }
 
-  int insertAfter(T value, T itemAfter, {String path}) {
+  int insertAfter(TreeNode value, TreeNode itemAfter, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     final index = node.children.indexOf(itemAfter) + 1;
     node.children.insert(index, value);
@@ -48,7 +48,7 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
     return index;
   }
 
-  int insertBefore(T value, T itemBefore, {String path}) {
+  int insertBefore(TreeNode value, TreeNode itemBefore, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     final index = node.children.indexOf(itemBefore);
     node.children.insert(index, value);
@@ -56,14 +56,14 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
     return index;
   }
 
-  void insertAll(Iterable<T> iterable, int index, {String path}) {
+  void insertAll(Iterable<TreeNode> iterable, int index, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     node.children.insertAll(index, iterable);
     node.populateChildrenPath(refresh: true);
   }
 
   @override
-  int insertAllAfter(Iterable<T> iterable, T itemAfter, {String path}) {
+  int insertAllAfter(Iterable<TreeNode> iterable, TreeNode itemAfter, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     final index = node.children.indexOf(itemAfter);
     node.children.insertAll(index, iterable);
@@ -72,7 +72,7 @@ class TreeList<T extends ListNode<T>> implements InsertableIterableTree<T> {
   }
 
   @override
-  int insertAllBefore(Iterable<T> iterable, T itemBefore, {String path}) {
+  int insertAllBefore(Iterable<TreeNode> iterable, TreeNode itemBefore, {String path}) {
     final node = path == null ? _root : _root.getNodeAt(path);
     final index = node.children.indexOf(itemBefore) - 1;
     node.children.insertAll(index, iterable);

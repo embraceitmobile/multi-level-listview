@@ -74,7 +74,7 @@ class AnimatedListController<T extends TreeNode> {
   List<TreeNode> childrenAt([String path]) {
     if (path?.isEmpty ?? true) return _items.value;
     var children = _items.value;
-    var nodes = ListNode.normalizePath(path).split(ListNode.PATH_SEPARATOR);
+    var nodes = ListNode.normalizePath(path).split(TreeNode.PATH_SEPARATOR);
     for (final node in nodes) {
       children = children.firstWhere((element) => node == element.key).children;
     }
@@ -83,7 +83,7 @@ class AnimatedListController<T extends TreeNode> {
 
   void collapseNode(TreeNode item) {
     final removeItems = _items.where((element) => element.path
-        .startsWith('${item.path}${ListNode.PATH_SEPARATOR}${item.key}'));
+        .startsWith('${item.path}${TreeNode.PATH_SEPARATOR}${item.key}'));
 
     removeAll(removeItems.toList());
     item.isExpanded = false;
@@ -104,7 +104,7 @@ class AnimatedListController<T extends TreeNode> {
 
   @visibleForTesting
   void handleAddItemsEvent(NodeEvent<T> event) {
-    final parentKey = event.path.split(ListNode.PATH_SEPARATOR).last;
+    final parentKey = event.path.split(TreeNode.PATH_SEPARATOR).last;
     final parentIndex =
         _items.indexWhere((element) => element.key == parentKey);
     final parentNode = _items[parentIndex];

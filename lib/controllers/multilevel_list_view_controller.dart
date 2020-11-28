@@ -2,8 +2,6 @@ import 'package:multi_level_list_view/controllers/animated_list_controller.dart'
 import 'package:multi_level_list_view/interfaces/iterable_tree.dart';
 import 'package:multi_level_list_view/interfaces/listenable_iterable_tree.dart';
 import 'package:multi_level_list_view/interfaces/tree_node.dart';
-import 'package:multi_level_list_view/tree_structures/tree_list/list_node.dart';
-import 'package:multi_level_list_view/tree_structures/tree_map/map_node.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 abstract class MultiLevelListViewController<T extends TreeNode>
@@ -87,7 +85,7 @@ class InsertableMultiLevelListViewController<T extends TreeNode>
   }
 
   @override
-  T get root => _listenableTree.root;
+  TreeNode get root => _listenableTree.root;
 
   @override
   void add(TreeNode value, {String path}) => _listenableTree.add(value, path: path);
@@ -101,23 +99,23 @@ class InsertableMultiLevelListViewController<T extends TreeNode>
       _listenableTree.insert(value, index, path: path);
 
   @override
-  int insertBefore(T value, T itemBefore, {String path}) =>
+  int insertBefore(TreeNode value, TreeNode itemBefore, {String path}) =>
       _listenableTree.insertBefore(value, itemBefore, path: path);
 
   @override
-  int insertAfter(T value, T itemAfter, {String path}) =>
+  int insertAfter(TreeNode value, TreeNode itemAfter, {String path}) =>
       _listenableTree.insertAfter(value, itemAfter, path: path);
 
   @override
-  void insertAll(Iterable<T> iterable, int index, {String path}) =>
+  void insertAll(Iterable<TreeNode> iterable, int index, {String path}) =>
       _listenableTree.insertAll(iterable, index, path: path);
 
   @override
-  int insertAllBefore(Iterable<T> iterable, T itemBefore, {String path}) =>
+  int insertAllBefore(Iterable<TreeNode> iterable, TreeNode itemBefore, {String path}) =>
       _listenableTree.insertAllBefore(iterable, itemBefore, path: path);
 
   @override
-  int insertAllAfter(Iterable<T> iterable, T itemAfter, {String path}) =>
+  int insertAllAfter(Iterable<TreeNode> iterable, TreeNode itemAfter, {String path}) =>
       _listenableTree.insertAllAfter(iterable, itemAfter, path: path);
 
   @override

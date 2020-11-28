@@ -23,17 +23,17 @@ abstract class InsertableIterableTree<T extends TreeNode>
 
   external factory InsertableIterableTree.from(List<ListNode<T>> list);
 
-  void insert(T value, int index, {String path});
+  void insert(TreeNode value, int index, {String path});
 
-  int insertAfter(T value, T itemAfter, {String path});
+  int insertAfter(TreeNode value, TreeNode itemAfter, {String path});
 
-  int insertBefore(T value, T itemBefore, {String path});
+  int insertBefore(TreeNode value, TreeNode itemBefore, {String path});
 
-  void insertAll(Iterable<T> iterable, int index, {String path});
+  void insertAll(Iterable<TreeNode> iterable, int index, {String path});
 
-  int insertAllAfter(Iterable<T> iterable, T itemAfter, {String path});
+  int insertAllAfter(Iterable<TreeNode> iterable, TreeNode itemAfter, {String path});
 
-  int insertAllBefore(Iterable<T> iterable, T itemBefore, {String path});
+  int insertAllBefore(Iterable<TreeNode> iterable, TreeNode itemBefore, {String path});
 
   TreeNode removeAt(int index, {String path});
 }

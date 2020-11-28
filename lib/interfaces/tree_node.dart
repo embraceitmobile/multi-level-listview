@@ -1,4 +1,7 @@
 abstract class TreeNode {
+  static const PATH_SEPARATOR = ".";
+  static const ROOT_KEY = "/";
+
   String get key;
 
   String path;
@@ -16,5 +19,4 @@ abstract class TreeNode {
   TreeNode getNodeAt(String path);
 
   TreeNode populateChildrenPath({bool refresh});
-
 }

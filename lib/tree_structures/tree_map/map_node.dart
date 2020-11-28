@@ -6,9 +6,6 @@ extension NodeMap<T extends _MapNode<T>> on Map<String, _MapNode<T>> {
 }
 
 mixin MapNode<T extends _MapNode<T>> implements _MapNode<T>, TreeNode {
-  static const PATH_SEPARATOR = ".";
-  static const ROOT_KEY = "/";
-
   Map<String, MapNode<T>> get children;
 
   /// [key] should be unique, if you are overriding it then make sure that it has a unique value
@@ -20,15 +17,15 @@ mixin MapNode<T extends _MapNode<T>> implements _MapNode<T>, TreeNode {
 
   bool get hasChildren => children.isNotEmpty;
 
-  int get level => PATH_SEPARATOR.allMatches(path).length - 1;
+  int get level => TreeNode.PATH_SEPARATOR.allMatches(path).length - 1;
 
-  String get childrenPath => "$path${MapNode.PATH_SEPARATOR}$key";
+  String get childrenPath => "$path${TreeNode.PATH_SEPARATOR}$key";
 
   MapNode<T> getNodeAt(String path) {
-    assert(key != ROOT_KEY ? !path.contains(ROOT_KEY) : true,
-        "Path with ROOT_KEY = $ROOT_KEY can only be called from the root node");
+    assert(key != TreeNode.ROOT_KEY ? !path.contains(TreeNode.ROOT_KEY) : true,
+        "Path with ROOT_KEY = ${TreeNode.ROOT_KEY} can only be called from the root node");
 
-    final nodes = MapNode.normalizePath(path).split(PATH_SEPARATOR);
+    final nodes = MapNode.normalizePath(path).split(TreeNode.PATH_SEPARATOR);
 
     var currentNode = this;
     for (final node in nodes) {
@@ -54,10 +51,10 @@ mixin MapNode<T extends _MapNode<T>> implements _MapNode<T>, TreeNode {
     if (path?.isEmpty ?? true) return "";
     var _path = path
         .toString()
-        .replaceAll("$PATH_SEPARATOR$ROOT_KEY", "")
-        .replaceAll(ROOT_KEY, "");
+        .replaceAll("${TreeNode.PATH_SEPARATOR}${TreeNode.ROOT_KEY}", "")
+        .replaceAll(TreeNode.ROOT_KEY, "");
 
-    if (_path.startsWith(PATH_SEPARATOR)) _path = _path.substring(1);
+    if (_path.startsWith(TreeNode.PATH_SEPARATOR)) _path = _path.substring(1);
     return _path;
   }
 

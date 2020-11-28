@@ -40,14 +40,14 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   }
 
   @override
-  void insert(T item, int index, {String path}) {
+  void insert(TreeNode item, int index, {String path}) {
     _value.insert(item, index, path: path);
     notifyListeners();
     emitInsertItems([item], index, path: path);
   }
 
   @override
-  int insertBefore(T value, T itemBefore, {String path}) {
+  int insertBefore(TreeNode value, TreeNode itemBefore, {String path}) {
     final index = _value.insertBefore(value, itemBefore, path: path);
     notifyListeners();
     emitInsertItems([value], index, path: path);
@@ -55,7 +55,7 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   }
 
   @override
-  int insertAfter(T value, T itemAfter, {String path}) {
+  int insertAfter(TreeNode value, TreeNode itemAfter, {String path}) {
     final index = _value.insertAfter(value, itemAfter, path: path);
     notifyListeners();
     emitInsertItems([value], index, path: path);
@@ -63,14 +63,14 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   }
 
   @override
-  void insertAll(Iterable<T> iterable, int index, {String path}) {
+  void insertAll(Iterable<TreeNode> iterable, int index, {String path}) {
     _value.insertAll(iterable, index, path: path);
     notifyListeners();
     emitInsertItems(iterable, index, path: path);
   }
 
   @override
-  int insertAllBefore(Iterable<T> iterable, T itemBefore, {String path}) {
+  int insertAllBefore(Iterable<TreeNode> iterable, TreeNode itemBefore, {String path}) {
     final index = _value.insertAllAfter(iterable, itemBefore, path: path);
     notifyListeners();
     emitInsertItems(iterable, index, path: path);
@@ -78,7 +78,7 @@ class ListenableTreeList<T extends ListNode<T>> extends ChangeNotifier
   }
 
   @override
-  int insertAllAfter(Iterable<T> iterable, T itemAfter, {String path}) {
+  int insertAllAfter(Iterable<TreeNode> iterable, TreeNode itemAfter, {String path}) {
     final index = _value.insertAllAfter(iterable, itemAfter, path: path);
     notifyListeners();
     emitInsertItems(iterable, index, path: path);
