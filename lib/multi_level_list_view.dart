@@ -3,16 +3,11 @@ library multi_level_list_view;
 import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
 import 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
-import 'package:multi_level_list_view/interfaces/iterable_tree_update_provider.dart';
-import 'package:multi_level_list_view/interfaces/listenable_iterable_tree.dart';
-import 'package:multi_level_list_view/tree_structures/node.dart';
-import 'package:multi_level_list_view/tree_structures/tree_list/listenable_tree_list.dart';
-import 'package:multi_level_list_view/tree_structures/tree_list/tree_list.dart';
+import 'package:multi_level_list_view/tree/node.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
-export 'package:multi_level_list_view/tree_structures/tree_list/tree_list.dart';
-export 'package:multi_level_list_view/tree_structures/node.dart';
+import 'tree/listenable_tree/listenable_tree.dart';
+import 'tree/tree_update_provider.dart';
 export 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
 
 typedef LeveledIndexedWidgetBuilder<T> = Widget Function(
@@ -25,9 +20,9 @@ const DEFAULT_COLLAPSE_ICON = const Icon(Icons.keyboard_arrow_up);
 const DEFAULT_SHOW_EXPANSION_INDICATOR = true;
 
 class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
-  final ListenableIterableTree<T> listenableTree;
+  final ListenableTree<T> listenableTree;
   final LeveledIndexedWidgetBuilder<T> builder;
-  final MultiLevelListViewController<T> controller;
+  final IMultiLevelListViewController<T> controller;
   final bool showExpansionIndicator;
   final Icon expandIcon;
   final Icon collapseIcon;
@@ -60,8 +55,8 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   factory MultiLevelListView({
     Key key,
     @required LeveledIndexedWidgetBuilder<T> builder,
-    List<T> initialItems,
-    EfficientMultiLevelListViewController<T> controller,
+    Map<String, T> initialItems,
+    MultiLevelListViewController<T> controller,
     ValueSetter<T> onItemTap,
     bool showExpansionIndicator,
     double indentPadding,
@@ -71,7 +66,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
       MultiLevelListView._(
         key: key,
         builder: builder,
-        listenableTree: ListenableTreeList.from(initialItems ?? <T>[]),
+        listenableTree: ListenableTree.fromMap(initialItems ?? <T>[]),
         controller: controller,
         onItemTap: onItemTap,
         showExpansionIndicator:
@@ -92,29 +87,29 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   ///
   /// If you do not have a requirement for insertion and removal of items in a
   /// node, use the more efficient [MultiLevelListView] instead.
-  factory MultiLevelListView.insertable({
-    Key key,
-    @required LeveledIndexedWidgetBuilder<T> builder,
-    List<T> initialItems,
-    InsertableMultiLevelListViewController<T> controller,
-    ValueSetter<T> onItemTap,
-    bool showExpansionIndicator,
-    double indentPadding,
-    Icon expandIcon,
-    Icon collapseIcon,
-  }) =>
-      MultiLevelListView._(
-        key: key,
-        builder: builder,
-        listenableTree: ListenableTreeList.from(initialItems ?? <T>[]),
-        controller: controller,
-        onItemTap: onItemTap,
-        showExpansionIndicator:
-            showExpansionIndicator ?? DEFAULT_SHOW_EXPANSION_INDICATOR,
-        indentPadding: indentPadding ?? DEFAULT_INDENT_PADDING,
-        expandIcon: expandIcon ?? DEFAULT_EXPAND_ICON,
-        collapseIcon: collapseIcon ?? DEFAULT_COLLAPSE_ICON,
-      );
+  // factory MultiLevelListView.indexed({
+  //   Key key,
+  //   @required LeveledIndexedWidgetBuilder<T> builder,
+  //   List<T> initialItems,
+  //   InsertableMultiLevelListViewController<T> controller,
+  //   ValueSetter<T> onItemTap,
+  //   bool showExpansionIndicator,
+  //   double indentPadding,
+  //   Icon expandIcon,
+  //   Icon collapseIcon,
+  // }) =>
+  //     MultiLevelListView._(
+  //       key: key,
+  //       builder: builder,
+  //       listenableTree: ListenableTreeList.from(initialItems ?? <T>[]),
+  //       controller: controller,
+  //       onItemTap: onItemTap,
+  //       showExpansionIndicator:
+  //           showExpansionIndicator ?? DEFAULT_SHOW_EXPANSION_INDICATOR,
+  //       indentPadding: indentPadding ?? DEFAULT_INDENT_PADDING,
+  //       expandIcon: expandIcon ?? DEFAULT_EXPAND_ICON,
+  //       collapseIcon: collapseIcon ?? DEFAULT_COLLAPSE_ICON,
+  //     );
 
   @override
   State<StatefulWidget> createState() => _MultiLevelListView<T>();
@@ -147,7 +142,7 @@ class _MultiLevelListView<T extends Node<T>>
     );
 
     widget.controller.attach(
-      tree: widget.listenableTree,
+      tree: widget.listenableTree.value,
       scrollController: _scrollController,
       listController: _animatedListController,
     );
@@ -176,7 +171,7 @@ class _MultiLevelListView<T extends Node<T>>
       child: widget.builder(context, item.level, item),
       indentPadding: widget.indentPadding * item.level,
       showExpansionIndicator:
-          widget.showExpansionIndicator && item.children.isNotEmpty,
+          widget.showExpansionIndicator && item.nodes.isNotEmpty,
       expandedIndicatorIcon:
           item.isExpanded ? widget.collapseIcon : widget.expandIcon,
       onTap: remove
