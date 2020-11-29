@@ -7,6 +7,7 @@ import 'package:multi_level_list_view/tree/node.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'tree/listenable_tree/listenable_tree.dart';
+import 'tree/tree.dart';
 import 'tree/tree_update_provider.dart';
 export 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
 
@@ -55,7 +56,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   factory MultiLevelListView({
     Key key,
     @required LeveledIndexedWidgetBuilder<T> builder,
-    Map<String, T> initialItems,
+    Map<String, Node<T>> initialItems,
     MultiLevelListViewController<T> controller,
     ValueSetter<T> onItemTap,
     bool showExpansionIndicator,
@@ -66,7 +67,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
       MultiLevelListView._(
         key: key,
         builder: builder,
-        listenableTree: ListenableTree.fromMap(initialItems ?? <T>[]),
+        listenableTree: ListenableTree(Tree(nodes: initialItems ?? {})),
         controller: controller,
         onItemTap: onItemTap,
         showExpansionIndicator:
@@ -171,7 +172,7 @@ class _MultiLevelListView<T extends Node<T>>
       child: widget.builder(context, item.level, item),
       indentPadding: widget.indentPadding * item.level,
       showExpansionIndicator:
-          widget.showExpansionIndicator && item.nodes.isNotEmpty,
+          widget.showExpansionIndicator && item.toList().isNotEmpty,
       expandedIndicatorIcon:
           item.isExpanded ? widget.collapseIcon : widget.expandIcon,
       onTap: remove

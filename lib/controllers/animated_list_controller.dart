@@ -89,8 +89,8 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   void expandNode(Node<T> item) {
-    if (item.nodes.isEmpty) return;
-    insertAll(indexOf(item) + 1, List.from(item.nodes));
+    if (item.toList().isEmpty) return;
+    insertAll(indexOf(item) + 1, List.from(item.toList()));
     item.isExpanded = true;
   }
 
@@ -116,7 +116,7 @@ class AnimatedListController<T extends Node<T>> {
     } else {
       // if the node is expanded, add the items in the flatList and
       // the animatedList
-      insertAll(parentIndex + parentNode.nodes.length, event.items);
+      insertAll(parentIndex + parentNode.toList().length, event.items);
     }
   }
 
