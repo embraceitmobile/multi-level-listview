@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:multi_level_list_view/listenables/listenable_list.dart';
-import 'package:multi_level_list_view/tree/listenable_tree/listenable_tree.dart';
-import 'package:multi_level_list_view/tree/node.dart';
-import 'package:multi_level_list_view/tree/tree_update_provider.dart';
+import 'package:multi_level_list_view/listenable_collections/listenable_list.dart';
+import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
+import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_update_provider.dart';
 
 class AnimatedListController<T extends Node<T>> {
   static const TAG = "AnimatedListController";

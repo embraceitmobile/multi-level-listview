@@ -3,12 +3,13 @@ library multi_level_list_view;
 import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
 import 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
-import 'package:multi_level_list_view/tree/node.dart';
+import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/tree_structures/tree_update_provider.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'tree/listenable_tree/listenable_tree.dart';
-import 'tree/tree.dart';
-import 'tree/tree_update_provider.dart';
+
+import 'listenable_collections/listenable_tree.dart';
+import 'tree_structures/tree.dart';
 export 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
 
 typedef LeveledIndexedWidgetBuilder<T> = Widget Function(
@@ -67,7 +68,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
       MultiLevelListView._(
         key: key,
         builder: builder,
-        listenableTree: ListenableTree(Tree(nodes: initialItems ?? {})),
+        listenableTree: ListenableTree(Tree.fromMap(initialItems)),
         controller: controller,
         onItemTap: onItemTap,
         showExpansionIndicator:

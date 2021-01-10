@@ -1,7 +1,7 @@
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
-import 'package:multi_level_list_view/tree/listenable_tree/listenable_tree.dart';
-import 'package:multi_level_list_view/tree/node.dart';
-import 'package:multi_level_list_view/tree/tree.dart';
+import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
+import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/tree_structures/tree.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 abstract class IMultiLevelListViewController<T extends Node<T>>
