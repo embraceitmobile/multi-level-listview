@@ -1,21 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:multi_level_list_view/multi_level_list_view.dart';
+import 'package:multi_level_list_view/tree_structures/node.dart';
+import 'package:multi_level_list_view/tree_structures/tree.dart';
 
-class NodeWithGivenId with Node<NodeWithGivenId> {
-  final String key;
-  final List<NodeWithGivenId> children;
+class TestNode extends MapNode<TestNode>{
+  void run(){
+    final test = TestNode();
 
-  NodeWithGivenId({
-    @required this.key,
-    this.children = const <NodeWithGivenId>[],
-  });
-}
-
-class TestNode with Node<TestNode> {
-  final List<TestNode> children;
-
-  TestNode({List<TestNode> children})
-      : this.children = children ?? <TestNode>[];
+  }
 }
 
 List<NodeWithGivenId> itemsWithIds = [
