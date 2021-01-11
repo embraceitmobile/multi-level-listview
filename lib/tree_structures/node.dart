@@ -8,13 +8,9 @@ class ListNode<T> with NodeViewData<T> implements Node<T> {
   String path;
 
   @mustCallSuper
-  ListNode()
+  ListNode({String key})
       : children = <Node<T>>[],
-        key = UniqueKey().toString();
-
-  factory ListNode.fromMap(Map<String, MapNode<T>> map) {
-    return ListNode();
-  }
+        key = key ?? UniqueKey().toString();
 
   UnmodifiableListView<Node<T>> toList() => children;
 }
@@ -25,13 +21,9 @@ class MapNode<T> with NodeViewData<T> implements Node<T> {
   String path;
 
   @mustCallSuper
-  MapNode()
+  MapNode({String key})
       : children = <String, Node<T>>{},
-        key = UniqueKey().toString();
-
-  factory MapNode.fromList(List<Node<T>> list) {
-    return MapNode();
-  }
+        key = key ?? UniqueKey().toString();
 
   UnmodifiableListView<Node<T>> toList() => children.values;
 }
