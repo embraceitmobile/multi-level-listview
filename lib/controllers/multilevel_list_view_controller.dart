@@ -1,13 +1,14 @@
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
+import 'package:multi_level_list_view/node/map_node.dart';
 import 'package:multi_level_list_view/node/node.dart';
-import 'package:multi_level_list_view/tree/tree.dart';
+import 'package:multi_level_list_view/tree/base/i_tree.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 abstract class IMultiLevelListViewController<T extends Node<T>>
-    implements Tree<T> {
+    implements ITree<T> {
   void attach(
-      {Tree<T> tree,
+      {ITree<T> tree,
       AnimatedListController listController,
       AutoScrollController scrollController});
 
@@ -27,7 +28,7 @@ class MultiLevelListViewController<T extends Node<T>>
   MultiLevelListViewController();
 
   void attach(
-      {Tree<T> tree,
+      {ITree<T> tree,
       AnimatedListController listController,
       AutoScrollController scrollController}) {
     _listenableTree = ListenableTree(tree);
@@ -36,10 +37,8 @@ class MultiLevelListViewController<T extends Node<T>>
   }
 
   @override
-  Node<T> get root => _listenableTree.root;
-
-  @override
-  void add(Node<T> value, {String path}) => _listenableTree.add(value, path: path);
+  void add(Node<T> value, {String path}) =>
+      _listenableTree.add(value, path: path);
 
   @override
   void addAll(Iterable<Node<T>> iterable, {String path}) =>
@@ -47,7 +46,6 @@ class MultiLevelListViewController<T extends Node<T>>
 
   @override
   void clear({String path}) => _listenableTree.clear(path: path);
-
 
   @override
   void scrollToIndex(int index) => _scrollController.scrollToIndex(index);
@@ -61,22 +59,13 @@ class MultiLevelListViewController<T extends Node<T>>
       _listController.toggleExpansion(item);
 
   @override
-  Node<T> operator [](covariant String at) {
+  Node<T> operator [](covariant at) {
     // TODO: implement []
     throw UnimplementedError();
   }
 
   @override
-  void operator []=(covariant String at, Node<T> value) {
-    // TODO: implement []=
-  }
-
-  @override
-  // TODO: implement children
-  Map<String, Node<T>> get children => throw UnimplementedError();
-
-  @override
-  T elementAt(String path) {
+  Node<T> elementAt(String path) {
     // TODO: implement elementAt
     throw UnimplementedError();
   }
@@ -99,4 +88,8 @@ class MultiLevelListViewController<T extends Node<T>>
   void removeWhere(bool Function(Node<T> element) test, {String path}) {
     // TODO: implement removeWhere
   }
+
+  @override
+  // TODO: implement root
+  Node<T> get root => throw UnimplementedError();
 }
