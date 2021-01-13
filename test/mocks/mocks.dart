@@ -16,9 +16,9 @@ get mockTreeWithIds => Tree()
                 MapNode("0C1C2A3A"),
                 MapNode("0C1C2A3B"),
                 MapNode("0C1C2A3C"),
-              ])
+              ]),
           ]),
-      ])
+      ]),
   ]);
 
 get mockTreeWithOutIds => Tree()
@@ -36,7 +36,7 @@ get mockTreeWithOutIds => Tree()
                 MapNode(),
                 MapNode(),
                 MapNode(),
-              ])
+              ]),
           ]),
-      ])
+      ]),
   ]);
