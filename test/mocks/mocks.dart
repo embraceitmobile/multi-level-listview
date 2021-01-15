@@ -1,7 +1,7 @@
 import 'package:multi_level_list_view/node/map_node.dart';
 import 'package:multi_level_list_view/tree/tree.dart';
 
-get mockTreeWithIds => Tree()
+Tree get mockTreeWithIds => Tree()
   ..addAll([
     MapNode("0A")..add(MapNode("0A1A")),
     MapNode("0B"),
@@ -21,7 +21,7 @@ get mockTreeWithIds => Tree()
       ]),
   ]);
 
-get mockTreeWithOutIds => Tree()
+Tree get mockTreeWithOutIds => Tree()
   ..addAll([
     MapNode()..add(MapNode()),
     MapNode(),

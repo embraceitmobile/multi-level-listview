@@ -75,16 +75,6 @@ class MultiLevelListViewController<T extends Node<T>>
   int get length => throw UnimplementedError();
 
   @override
-  void remove(Node<T> element, {String path}) {
-    // TODO: implement remove
-  }
-
-  @override
-  void removeAll(Iterable<Node<T>> iterable, {String path}) {
-    // TODO: implement removeAll
-  }
-
-  @override
   void removeWhere(bool Function(Node<T> element) test, {String path}) {
     // TODO: implement removeWhere
   }
@@ -92,4 +82,14 @@ class MultiLevelListViewController<T extends Node<T>>
   @override
   // TODO: implement root
   Node<T> get root => throw UnimplementedError();
+
+  @override
+  void remove(String key, {String path}) {
+    // TODO: implement remove
+  }
+
+  @override
+  void removeAll(Iterable<String> keys, {String path}) {
+    // TODO: implement removeAll
+  }
 }
