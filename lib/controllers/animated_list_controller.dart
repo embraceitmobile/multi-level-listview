@@ -70,16 +70,6 @@ class AnimatedListController<T extends Node<T>> {
     }
   }
 
-  // List<Node<T>> childrenAt([String path]) {
-  //   if (path?.isEmpty ?? true) return _items.value;
-  //   var children = _items.value.
-  //   var nodes = Node.normalizePath(path).split(Node.PATH_SEPARATOR);
-  //   for (final node in nodes) {
-  //     children = children.firstWhere((element) => node == element.key).children;
-  //   }
-  //   return children;
-  // }
-
   void collapseNode(Node<T> item) {
     final removeItems = _items.where((element) => element.path
         .startsWith('${item.path}${Node.PATH_SEPARATOR}${item.key}'));
@@ -146,10 +136,6 @@ class AnimatedListController<T extends Node<T>> {
               .toList());
         }
       }
-      // // if item is not in the root list, then remove its value from the _items
-      // if (Node.normalizePath(item.path).isNotEmpty ?? false) {
-      //   childrenAt(item.path).remove(item);
-      // }
     }
   }
 }
