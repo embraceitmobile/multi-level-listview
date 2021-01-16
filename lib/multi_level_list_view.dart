@@ -13,7 +13,7 @@ import 'node/node.dart';
 import 'tree/tree.dart';
 export 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
 
-typedef LeveledIndexedWidgetBuilder<T> = Widget Function(
+typedef LeveledItemWidgetBuilder<T> = Widget Function(
     BuildContext context, int level, T item);
 
 const TAG = "MultiLevelListView";
@@ -24,7 +24,7 @@ const DEFAULT_SHOW_EXPANSION_INDICATOR = true;
 
 class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   final ListenableTree<T> listenableTree;
-  final LeveledIndexedWidgetBuilder<T> builder;
+  final LeveledItemWidgetBuilder<T> builder;
   final ITreeListViewController<T> controller;
   final bool showExpansionIndicator;
   final Icon expandIcon;
@@ -57,7 +57,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   /// items at index positions, use the alternate [MultiLevelListView.insertable]
   factory MultiLevelListView({
     Key key,
-    @required LeveledIndexedWidgetBuilder<T> builder,
+    @required LeveledItemWidgetBuilder<T> builder,
     Map<String, Node<T>> initialItems,
     TreeListViewController<T> controller,
     ValueSetter<T> onItemTap,
@@ -166,17 +166,17 @@ class _MultiLevelListView<T extends Node<T>>
   }
 
   /// Used to build list items that haven't been removed.
-  Widget _buildItem(Node<T> item, Animation<double> animation,
+  Widget _buildItem(Node<T> node, Animation<double> animation,
       {bool remove = false, int index}) {
     final itemContainer = ListItemContainer(
       animation: animation,
-      item: item,
-      child: widget.builder(context, item.level, item),
-      indentPadding: widget.indentPadding * item.level,
+      item: node,
+      child: widget.builder(context, node.level, node),
+      indentPadding: widget.indentPadding * node.level,
       showExpansionIndicator:
-          widget.showExpansionIndicator && item.childrenAsList.isNotEmpty,
+          widget.showExpansionIndicator && node.childrenAsList.isNotEmpty,
       expandedIndicatorIcon:
-          item.isExpanded ? widget.collapseIcon : widget.expandIcon,
+          node.isExpanded ? widget.collapseIcon : widget.expandIcon,
       onTap: remove
           ? null
           : (item) {
@@ -188,7 +188,7 @@ class _MultiLevelListView<T extends Node<T>>
     if (index == null) return itemContainer;
 
     return AutoScrollTag(
-      key: ValueKey(item.key),
+      key: ValueKey(node.key),
       controller: _scrollController,
       index: index,
       child: itemContainer,

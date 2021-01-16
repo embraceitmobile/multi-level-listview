@@ -18,7 +18,7 @@ class TreeListViewController<T extends Node<T>>
   void attach(
       {@required ITree<T> tree,
       @required AnimatedListController listController,
-      AutoScrollController scrollController}) {
+      @required AutoScrollController scrollController}) {
     _listenableTree = ListenableTree(tree);
     _listController = listController;
     _scrollController = scrollController;
