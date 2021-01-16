@@ -25,11 +25,23 @@ class TreeListViewController<T extends Node<T>>
   }
 
   @override
-  void scrollToIndex(int index) => _scrollController.scrollToIndex(index);
+  Node<T> get root => _listenableTree.root;
+
+  @override
+  int get length => _listenableTree.length;
+
+  @override
+  Node<T> elementAt(String path) => _listenableTree.elementAt(path);
+
+  @override
+  Node<T> operator [](String at) => _listenableTree[at];
+
+  @override
+  void scrollToIndex(int index) => _scrollController?.scrollToIndex(index);
 
   @override
   void scrollToItem(T item) =>
-      _scrollController.scrollToIndex(_listController.indexOf(item));
+      _scrollController?.scrollToIndex(_listController.indexOf(item));
 
   @override
   void toggleNodeExpandCollapse(Node<T> item) =>
@@ -44,29 +56,17 @@ class TreeListViewController<T extends Node<T>>
       _listenableTree.addAll(iterable, path: path);
 
   @override
-  void clear({String path}) => _listenableTree.clear(path: path);
-
-  @override
-  Node<T> operator [](String at) => _listenableTree[at];
-
-  @override
-  Node<T> elementAt(String path) => _listenableTree.elementAt(path);
-
-  @override
-  int get length => _listenableTree.length;
-
-  @override
-  void removeWhere(bool Function(Node<T> element) test, {String path}) =>
-      _listenableTree.removeWhere(test, path: path);
-
-  @override
-  Node<T> get root => _listenableTree.root;
-
-  @override
   void remove(String key, {String path}) =>
       _listenableTree.remove(key, path: path);
 
   @override
   void removeAll(Iterable<String> keys, {String path}) =>
       _listenableTree.removeAll(keys, path: path);
+
+  @override
+  void removeWhere(bool Function(Node<T> element) test, {String path}) =>
+      _listenableTree.removeWhere(test, path: path);
+
+  @override
+  void clear({String path}) => _listenableTree.clear(path: path);
 }

@@ -2,31 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_list.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
 import 'package:multi_level_list_view/node/node.dart';
-import 'package:multi_level_list_view/tree/tree_update_provider.dart';
+import 'package:multi_level_list_view/tree/tree_change_notifier.dart';
 
 class AnimatedListController<T extends Node<T>> {
   static const TAG = "AnimatedListController";
 
   final GlobalKey<AnimatedListState> _listKey;
-  final ListenableTree<T> _listenableIterableTree;
+  final TreeChangeNotifier<T> _treeChangeNotifier;
   final dynamic _removedItemBuilder;
   final ListenableList<Node<T>> _items;
 
   AnimatedListController(
       {@required GlobalKey<AnimatedListState> listKey,
       @required dynamic removedItemBuilder,
-      ListenableTree<T> tree})
+      @required ListenableTree<T> tree})
       : _listKey = listKey,
-        _items = ListenableList.from(tree.root.children),
+        _items = ListenableList.from(tree.root.childrenAsList),
         _removedItemBuilder = removedItemBuilder,
-        _listenableIterableTree = tree,
+        _treeChangeNotifier = tree,
         assert(listKey != null),
         assert(removedItemBuilder != null) {
-    if (tree != null) {
-      _listenableIterableTree.addedItems.listen(handleAddItemsEvent);
-      _listenableIterableTree.insertedItems.listen(handleInsertItemsEvent);
-      _listenableIterableTree.removedItems.listen(handleRemoveItemsEvent);
-    }
+    _treeChangeNotifier.addedItems.listen(handleAddItemsEvent);
+    _treeChangeNotifier.insertedItems.listen(handleInsertItemsEvent);
+    _treeChangeNotifier.removedItems.listen(handleRemoveItemsEvent);
   }
 
   ListenableList<Node<T>> get list => _items;
@@ -79,8 +77,8 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   void expandNode(Node<T> item) {
-    if (item.toList().isEmpty) return;
-    insertAll(indexOf(item) + 1, List.from(item.toList()));
+    if (item.childrenAsList.isEmpty) return;
+    insertAll(indexOf(item) + 1, List.from(item.childrenAsList));
     item.isExpanded = true;
   }
 
@@ -106,7 +104,7 @@ class AnimatedListController<T extends Node<T>> {
     } else {
       // if the node is expanded, add the items in the flatList and
       // the animatedList
-      insertAll(parentIndex + parentNode.toList().length, event.items);
+      insertAll(parentIndex + parentNode.childrenAsList.length, event.items);
     }
   }
 

@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:multi_level_list_view/node/node.dart';
 
-abstract class TreeUpdateProvider<T> {
+abstract class TreeChangeNotifier<T> {
   final StreamController<NodeEvent<T>> _addedItemsController =
       StreamController<NodeEvent<T>>.broadcast();
 
@@ -12,18 +13,18 @@ abstract class TreeUpdateProvider<T> {
       StreamController<NodeEvent<T>>.broadcast();
 
   @protected
-  void emitAddItems(Iterable<T> iterable, {String path}) {
+  void emitAddItems(Iterable<Node<T>> iterable, {String path}) {
     _addedItemsController.sink.add(NodeEvent(iterable, path: path));
   }
 
   @protected
-  void emitInsertItems(Iterable<T> iterable, int index, {String path}) {
+  void emitInsertItems(Iterable<Node<T>> iterable, int index, {String path}) {
     _insertedItemsController.sink
         .add(NodeEvent(iterable, index: index, path: path));
   }
 
   @protected
-  void emitRemoveItems(Iterable<T> iterable, {String path}) {
+  void emitRemoveItems(Iterable<Node<T>> iterable, {String path}) {
     _removedItemsController.sink.add(NodeEvent(iterable, path: path));
   }
 
@@ -41,7 +42,7 @@ abstract class TreeUpdateProvider<T> {
 }
 
 class NodeEvent<T> {
-  final List<T> items;
+  final Iterable<Node<T>> items;
   final int index;
   final String path;
 

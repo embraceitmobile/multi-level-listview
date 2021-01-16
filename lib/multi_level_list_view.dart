@@ -3,7 +3,7 @@ library multi_level_list_view;
 import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
 import 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
-import 'package:multi_level_list_view/tree/tree_update_provider.dart';
+import 'package:multi_level_list_view/tree/tree_change_notifier.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -174,7 +174,7 @@ class _MultiLevelListView<T extends Node<T>>
       child: widget.builder(context, item.level, item),
       indentPadding: widget.indentPadding * item.level,
       showExpansionIndicator:
-          widget.showExpansionIndicator && item.toList().isNotEmpty,
+          widget.showExpansionIndicator && item.childrenAsList.isNotEmpty,
       expandedIndicatorIcon:
           item.isExpanded ? widget.collapseIcon : widget.expandIcon,
       onTap: remove
