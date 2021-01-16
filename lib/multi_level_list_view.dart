@@ -2,15 +2,16 @@ library multi_level_list_view;
 
 import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
-import 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
+import 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
 import 'package:multi_level_list_view/tree/tree_update_provider.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+import 'controllers/list_view_controller/tree_list_view_controller.dart';
 import 'listenable_collections/listenable_tree.dart';
 import 'node/node.dart';
 import 'tree/tree.dart';
-export 'package:multi_level_list_view/controllers/multilevel_list_view_controller.dart';
+export 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
 
 typedef LeveledIndexedWidgetBuilder<T> = Widget Function(
     BuildContext context, int level, T item);
@@ -24,7 +25,7 @@ const DEFAULT_SHOW_EXPANSION_INDICATOR = true;
 class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   final ListenableTree<T> listenableTree;
   final LeveledIndexedWidgetBuilder<T> builder;
-  final IMultiLevelListViewController<T> controller;
+  final ITreeListViewController<T> controller;
   final bool showExpansionIndicator;
   final Icon expandIcon;
   final Icon collapseIcon;
@@ -58,7 +59,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
     Key key,
     @required LeveledIndexedWidgetBuilder<T> builder,
     Map<String, Node<T>> initialItems,
-    MultiLevelListViewController<T> controller,
+    TreeListViewController<T> controller,
     ValueSetter<T> onItemTap,
     bool showExpansionIndicator,
     double indentPadding,
