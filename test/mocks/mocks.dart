@@ -21,6 +21,26 @@ Tree get mockTreeWithIds => Tree()
       ]),
   ]);
 
+MapNode get mockMapNode => MapNode()
+  ..addAll([
+    MapNode("0A")..add(MapNode("0A1A")),
+    MapNode("0B"),
+    MapNode("0C")
+      ..addAll([
+        MapNode("0C1A"),
+        MapNode("0C1B"),
+        MapNode("0C1C")
+          ..addAll([
+            MapNode("0C1C2A")
+              ..addAll([
+                MapNode("0C1C2A3A"),
+                MapNode("0C1C2A3B"),
+                MapNode("0C1C2A3C"),
+              ]),
+          ]),
+      ]),
+  ]);
+
 Tree get mockTreeWithOutIds => Tree()
   ..addAll([
     MapNode()..add(MapNode()),
