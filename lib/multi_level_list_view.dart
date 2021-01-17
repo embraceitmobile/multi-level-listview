@@ -11,6 +11,16 @@ import 'controllers/list_view_controller/tree_list_view_controller.dart';
 import 'listenable_collections/listenable_tree.dart';
 import 'node/node.dart';
 import 'tree/tree.dart';
+
+export 'package:multi_level_list_view/node/map_node.dart';
+export 'package:multi_level_list_view/node/list_node.dart';
+export 'package:multi_level_list_view/node/node.dart';
+export 'package:multi_level_list_view/tree/tree.dart';
+export 'package:multi_level_list_view/tree/indexed_tree.dart';
+export 'package:multi_level_list_view/controllers/animated_list_controller.dart';
+export 'package:multi_level_list_view/controllers/list_view_controller/tree_list_view_controller.dart';
+export 'package:multi_level_list_view/controllers/list_view_controller/indexed_tree_list_view_controller.dart';
+
 export 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
 
 typedef LeveledItemWidgetBuilder<T> = Widget Function(
@@ -31,6 +41,10 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   final Icon collapseIcon;
   final double indentPadding;
   final ValueSetter<T> onItemTap;
+  final bool primary;
+  final ScrollPhysics physics;
+  final bool shrinkWrap;
+  final EdgeInsetsGeometry padding;
 
   const MultiLevelListView._({
     Key key,
@@ -42,6 +56,10 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
     this.indentPadding,
     this.expandIcon,
     this.collapseIcon,
+    this.primary,
+    this.physics,
+    this.shrinkWrap,
+    this.padding,
   }) : super(key: key);
 
   /// The default [MultiLevelListView] uses a TreeMap structure internally for
@@ -65,11 +83,16 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
     double indentPadding,
     Icon expandIcon,
     Icon collapseIcon,
+    bool primary,
+    ScrollPhysics physics,
+    bool shrinkWrap,
+    EdgeInsetsGeometry padding,
   }) =>
       MultiLevelListView._(
         key: key,
         builder: builder,
-        listenableTree: ListenableTree(Tree.fromMap(initialItems)),
+        listenableTree: ListenableTree(
+            initialItems == null ? Tree() : Tree.fromMap(initialItems)),
         controller: controller,
         onItemTap: onItemTap,
         showExpansionIndicator:
@@ -77,6 +100,10 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
         indentPadding: indentPadding ?? DEFAULT_INDENT_PADDING,
         expandIcon: expandIcon ?? DEFAULT_EXPAND_ICON,
         collapseIcon: collapseIcon ?? DEFAULT_COLLAPSE_ICON,
+        primary: primary,
+        physics: physics,
+        shrinkWrap: shrinkWrap,
+        padding: padding,
       );
 
   /// The [MultiLevelListView.insertable] uses a [TreeList] structure internally
@@ -128,8 +155,19 @@ class _MultiLevelListView<T extends Node<T>>
   void initState() {
     super.initState();
 
-    widget.listenableTree.addedItems.listen(_handleItemAdditionEvent);
-    widget.listenableTree.insertedItems.listen(_handleItemAdditionEvent);
+    widget.listenableTree.addListener(() {
+      if (widget.listenableTree.addedNodes != null) {
+        print(
+            "[$TAG][listenableTree] Nodes added: ${widget.listenableTree.addedNodes}");
+        _handleItemAdditionEvent(widget.listenableTree.addedNodes);
+      }
+
+      if (widget.listenableTree.insertedNodes != null) {
+        print(
+            "[$TAG][listenableTree] Nodes inserted: ${widget.listenableTree.insertedNodes}");
+        _handleItemInsertEvent(widget.listenableTree.insertedNodes);
+      }
+    });
   }
 
   @override
@@ -160,6 +198,10 @@ class _MultiLevelListView<T extends Node<T>>
       key: _listKey,
       initialItemCount: list.length,
       controller: _scrollController,
+      primary: widget.primary,
+      physics: widget.physics,
+      padding: widget.padding,
+      shrinkWrap: widget.shrinkWrap,
       itemBuilder: (context, index, animation) =>
           _buildItem(list[index], animation, index: index),
     );
@@ -199,7 +241,14 @@ class _MultiLevelListView<T extends Node<T>>
           T item, BuildContext context, Animation<double> animation) =>
       _buildItem(item, animation, remove: true);
 
-  void _handleItemAdditionEvent(NodeEvent<T> event) {
+  void _handleItemAdditionEvent(NodeAddEvent<T> event) {
+    Future.delayed(
+        Duration(milliseconds: 300),
+        () => _scrollController
+            .scrollToIndex(_animatedListController.indexOf(event.items.first)));
+  }
+
+  void _handleItemInsertEvent(NodeInsertEvent<T> event) {
     Future.delayed(
         Duration(milliseconds: 300),
         () => _scrollController

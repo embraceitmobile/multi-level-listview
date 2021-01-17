@@ -22,9 +22,16 @@ class AnimatedListController<T extends Node<T>> {
         _treeChangeNotifier = tree,
         assert(listKey != null),
         assert(removedItemBuilder != null) {
-    _treeChangeNotifier.addedItems.listen(handleAddItemsEvent);
-    _treeChangeNotifier.insertedItems.listen(handleInsertItemsEvent);
-    _treeChangeNotifier.removedItems.listen(handleRemoveItemsEvent);
+    _treeChangeNotifier.addListener(() {
+      if (_treeChangeNotifier.addedNodes != null)
+        handleAddItemsEvent(_treeChangeNotifier.addedNodes);
+
+      if (_treeChangeNotifier.removedNodes != null)
+        handleRemoveItemsEvent(_treeChangeNotifier.removedNodes);
+
+      if (_treeChangeNotifier.insertedNodes != null)
+        handleInsertItemsEvent(_treeChangeNotifier.insertedNodes);
+    });
   }
 
   ListenableList<Node<T>> get list => _items;
@@ -35,6 +42,9 @@ class AnimatedListController<T extends Node<T>> {
 
   int indexOf(T item) =>
       _items.indexWhere((e) => e.path == item.path && e.key == item.key);
+
+  int indexFromKeyAndPath(String key, String path) =>
+      _items.indexWhere((e) => e.path == path && e.key == key);
 
   void insert(int index, Node<T> item) {
     _items.insert(index, item);
@@ -90,7 +100,7 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   @visibleForTesting
-  void handleAddItemsEvent(NodeEvent<T> event) {
+  void handleAddItemsEvent(NodeAddEvent<T> event) {
     final parentKey = event.path.split(Node.PATH_SEPARATOR).last;
     final parentIndex =
         _items.indexWhere((element) => element.key == parentKey);
@@ -109,7 +119,7 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   @visibleForTesting
-  void handleInsertItemsEvent(NodeEvent<T> event) {
+  void handleInsertItemsEvent(NodeInsertEvent<T> event) {
     //check if the path is visible in the animatedList
     if (_items.any((item) => item.path == event.path)) {
       // get the last child in the path
@@ -121,16 +131,17 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   @visibleForTesting
-  void handleRemoveItemsEvent(NodeEvent<T> event) {
-    for (final item in event.items) {
+  void handleRemoveItemsEvent(NodeRemoveEvent event) {
+    for (final key in event.keys) {
       //if item is in the root of the list, then remove the item
-      if (_items.contains(item)) {
-        remove(item);
+      if (_items.any((item) => item.key == key)) {
+        final removedItem = removeAt(indexFromKeyAndPath(key, event.path));
 
-        if (item.isExpanded) {
+        if (removedItem.isExpanded) {
           //if the item is expanded, also remove its children
           removeAll(_items
-              .where((element) => element.path.startsWith(item.childrenPath))
+              .where((element) =>
+                  element.path.startsWith(removedItem.childrenPath))
               .toList());
         }
       }

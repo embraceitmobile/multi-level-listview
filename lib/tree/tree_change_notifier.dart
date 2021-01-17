@@ -2,49 +2,70 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:multi_level_list_view/node/node.dart';
 
-abstract class TreeChangeNotifier<T> {
-  final StreamController<NodeEvent<T>> _addedItemsController =
-      StreamController<NodeEvent<T>>.broadcast();
+abstract class TreeChangeNotifier<T> extends ChangeNotifier {
+  // final StreamController<NodeAddEvent<T>> _addedItemsController =
+  //     StreamController<NodeAddEvent<T>>.broadcast();
+  //
+  // final StreamController<NodeInsertEvent<T>> _insertedItemsController =
+  //     StreamController<NodeInsertEvent<T>>.broadcast();
+  //
+  // final StreamController<NodeRemoveEvent> _removedItemsController =
+  //     StreamController<NodeRemoveEvent>.broadcast();
+  //
+  // @protected
+  // void emitAddItems(Iterable<Node<T>> iterable, {String path}) {
+  //   _addedItemsController.sink.add(NodeAddEvent(iterable, path: path));
+  // }
+  //
+  // @protected
+  // void emitInsertItems(Iterable<Node<T>> iterable, int index, {String path}) {
+  //   _insertedItemsController.sink
+  //       .add(NodeInsertEvent(iterable, index, path: path));
+  // }
+  //
+  // @protected
+  // void emitRemoveItems(Iterable<String> keys, {String path}) {
+  //   _removedItemsController.sink.add(NodeRemoveEvent(keys, path: path));
+  // }
+  //
+  // Stream<NodeAddEvent<T>> get addedItems => _addedItemsController.stream;
+  //
+  // Stream<NodeInsertEvent<T>> get insertedItems =>
+  //     _insertedItemsController.stream;
+  //
+  // Stream<NodeRemoveEvent> get removedItems => _removedItemsController.stream;
 
-  final StreamController<NodeEvent<T>> _insertedItemsController =
-      StreamController<NodeEvent<T>>.broadcast();
+  NodeAddEvent<T> get addedNodes;
 
-  final StreamController<NodeEvent<T>> _removedItemsController =
-      StreamController<NodeEvent<T>>.broadcast();
+  NodeInsertEvent<T> get insertedNodes;
 
-  @protected
-  void emitAddItems(Iterable<Node<T>> iterable, {String path}) {
-    _addedItemsController.sink.add(NodeEvent(iterable, path: path));
-  }
+  NodeRemoveEvent get removedNodes;
 
-  @protected
-  void emitInsertItems(Iterable<Node<T>> iterable, int index, {String path}) {
-    _insertedItemsController.sink
-        .add(NodeEvent(iterable, index: index, path: path));
-  }
-
-  @protected
-  void emitRemoveItems(Iterable<Node<T>> iterable, {String path}) {
-    _removedItemsController.sink.add(NodeEvent(iterable, path: path));
-  }
-
-  Stream<NodeEvent<T>> get addedItems => _addedItemsController.stream;
-
-  Stream<NodeEvent<T>> get insertedItems => _insertedItemsController.stream;
-
-  Stream<NodeEvent<T>> get removedItems => _removedItemsController.stream;
-
-  void dispose() {
-    _addedItemsController.close();
-    _insertedItemsController.close();
-    _removedItemsController.close();
-  }
+// void dispose() {
+//   _addedItemsController.close();
+//   _insertedItemsController.close();
+//   _removedItemsController.close();
+// }
 }
 
-class NodeEvent<T> {
+class NodeAddEvent<T> {
   final Iterable<Node<T>> items;
-  final int index;
   final String path;
 
-  const NodeEvent(this.items, {this.index, this.path});
+  const NodeAddEvent(this.items, {this.path});
+}
+
+class NodeRemoveEvent {
+  final Iterable<String> keys;
+  final String path;
+
+  const NodeRemoveEvent(this.keys, {this.path});
+}
+
+class NodeInsertEvent<T> {
+  final Iterable<Node<T>> items;
+  final String path;
+  final int index;
+
+  const NodeInsertEvent(this.items, this.index, {this.path});
 }
