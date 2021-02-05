@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:multi_level_list_view/node/node.dart';
 
-abstract class TreeChangeNotifier<T> extends ChangeNotifier {
-  NodeAddEvent<T> get addedNodes;
+abstract class TreeUpdateNotifier<T> {
+  Stream<NodeAddEvent<T>> get addedNodes;
 
-  NodeInsertEvent<T> get insertedNodes;
+  Stream<NodeInsertEvent<T>> get insertedNodes;
 
-  NodeRemoveEvent get removedNodes;
+  Stream<NodeRemoveEvent> get removedNodes;
+
+  void dispose();
 }
 
 class NodeAddEvent<T> {

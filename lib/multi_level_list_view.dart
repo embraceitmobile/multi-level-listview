@@ -3,7 +3,7 @@ library multi_level_list_view;
 import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/controllers/animated_list_controller.dart';
 import 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
-import 'package:multi_level_list_view/tree/tree_change_notifier.dart';
+import 'package:multi_level_list_view/tree/tree_update_notifier.dart';
 import 'package:multi_level_list_view/widgets/list_item_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -155,19 +155,8 @@ class _MultiLevelListView<T extends Node<T>>
   void initState() {
     super.initState();
 
-    widget.listenableTree.addListener(() {
-      if (widget.listenableTree.addedNodes != null) {
-        print(
-            "[$TAG][listenableTree] Nodes added: ${widget.listenableTree.addedNodes}");
-        _handleItemAdditionEvent(widget.listenableTree.addedNodes);
-      }
-
-      if (widget.listenableTree.insertedNodes != null) {
-        print(
-            "[$TAG][listenableTree] Nodes inserted: ${widget.listenableTree.insertedNodes}");
-        _handleItemInsertEvent(widget.listenableTree.insertedNodes);
-      }
-    });
+    widget.listenableTree.addedNodes.listen(_handleItemAdditionEvent);
+    widget.listenableTree.insertedNodes.listen(_handleItemInsertEvent);
   }
 
   @override
@@ -187,6 +176,12 @@ class _MultiLevelListView<T extends Node<T>>
       scrollController: _scrollController,
       listController: _animatedListController,
     );
+  }
+
+  @override
+  void dispose(){
+    widget.listenableTree.dispose();
+    super.dispose();
   }
 
   @override

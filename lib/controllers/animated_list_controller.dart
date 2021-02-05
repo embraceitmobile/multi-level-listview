@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_list.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
 import 'package:multi_level_list_view/node/node.dart';
-import 'package:multi_level_list_view/tree/tree_change_notifier.dart';
+import 'package:multi_level_list_view/tree/tree_update_notifier.dart';
 
 class AnimatedListController<T extends Node<T>> {
   static const TAG = "AnimatedListController";
 
   final GlobalKey<AnimatedListState> _listKey;
-  final TreeChangeNotifier<T> _treeChangeNotifier;
+  final TreeUpdateNotifier<T> _treeUpdateNotifier;
   final dynamic _removedItemBuilder;
   final ListenableList<Node<T>> _items;
 
@@ -19,19 +19,12 @@ class AnimatedListController<T extends Node<T>> {
       : _listKey = listKey,
         _items = ListenableList.from(tree.root.childrenAsList),
         _removedItemBuilder = removedItemBuilder,
-        _treeChangeNotifier = tree,
+        _treeUpdateNotifier = tree,
         assert(listKey != null),
         assert(removedItemBuilder != null) {
-    _treeChangeNotifier.addListener(() {
-      if (_treeChangeNotifier.addedNodes != null)
-        handleAddItemsEvent(_treeChangeNotifier.addedNodes);
-
-      if (_treeChangeNotifier.removedNodes != null)
-        handleRemoveItemsEvent(_treeChangeNotifier.removedNodes);
-
-      if (_treeChangeNotifier.insertedNodes != null)
-        handleInsertItemsEvent(_treeChangeNotifier.insertedNodes);
-    });
+    _treeUpdateNotifier.addedNodes.listen(handleAddItemsEvent);
+    _treeUpdateNotifier.removedNodes.listen(handleRemoveItemsEvent);
+    _treeUpdateNotifier.insertedNodes.listen(handleInsertItemsEvent);
   }
 
   ListenableList<Node<T>> get list => _items;
