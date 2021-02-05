@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 import 'controllers/list_view_controller/tree_list_view_controller.dart';
 import 'listenable_collections/listenable_tree.dart';
+import 'node/map_node.dart';
 import 'node/node.dart';
 import 'tree/tree.dart';
 
@@ -22,6 +23,8 @@ export 'package:multi_level_list_view/controllers/list_view_controller/tree_list
 export 'package:multi_level_list_view/controllers/list_view_controller/indexed_tree_list_view_controller.dart';
 
 export 'package:multi_level_list_view/controllers/list_view_controller/base/i_tree_list_view_controller.dart';
+export 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
+export 'mocks.dart';
 
 typedef LeveledItemWidgetBuilder<T> = Widget Function(
     BuildContext context, int level, T item);
@@ -33,7 +36,7 @@ const DEFAULT_COLLAPSE_ICON = const Icon(Icons.keyboard_arrow_up);
 const DEFAULT_SHOW_EXPANSION_INDICATOR = true;
 
 class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
-  final ListenableTree<T> listenableTree;
+  final Map<String, T> initialItems;
   final LeveledItemWidgetBuilder<T> builder;
   final ITreeListViewController<T> controller;
   final bool showExpansionIndicator;
@@ -49,7 +52,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   const MultiLevelListView._({
     Key key,
     @required this.builder,
-    this.listenableTree,
+    this.initialItems,
     this.controller,
     this.onItemTap,
     this.showExpansionIndicator,
@@ -76,7 +79,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
   factory MultiLevelListView({
     Key key,
     @required LeveledItemWidgetBuilder<T> builder,
-    Map<String, Node<T>> initialItems,
+    Map<String, T> initialItems,
     TreeListViewController<T> controller,
     ValueSetter<T> onItemTap,
     bool showExpansionIndicator,
@@ -91,8 +94,7 @@ class MultiLevelListView<T extends Node<T>> extends StatefulWidget {
       MultiLevelListView._(
         key: key,
         builder: builder,
-        listenableTree: ListenableTree(
-            initialItems == null ? Tree() : Tree.fromMap(initialItems)),
+        initialItems: initialItems,
         controller: controller,
         onItemTap: onItemTap,
         showExpansionIndicator:
@@ -150,13 +152,25 @@ class _MultiLevelListView<T extends Node<T>>
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   AnimatedListController<T> _animatedListController;
   AutoScrollController _scrollController;
+  ListenableTree<T> listenableTree;
 
   @override
   void initState() {
     super.initState();
 
-    widget.listenableTree.addedNodes.listen(_handleItemAdditionEvent);
-    widget.listenableTree.insertedNodes.listen(_handleItemInsertEvent);
+    listenableTree ??= ListenableTree<T>(widget.initialItems == null
+        ? Tree<T>()
+        : Tree<T>.fromMap(widget.initialItems));
+
+    listenableTree.addedNodes.listen((event) {
+      print("Nodes added: of type $event, ${event.items.length}");
+      _handleItemAdditionEvent(event);
+    });
+
+    listenableTree.insertedNodes.listen((event) {
+      print("Nodes removed: of type $event, ${event.items}");
+      _handleItemInsertEvent(event);
+    });
   }
 
   @override
@@ -167,27 +181,26 @@ class _MultiLevelListView<T extends Node<T>>
 
     _animatedListController = AnimatedListController(
       listKey: _listKey,
-      tree: widget.listenableTree,
+      tree: listenableTree,
       removedItemBuilder: _buildRemovedItem,
     );
 
     widget.controller.attach(
-      tree: widget.listenableTree.value,
+      tree: listenableTree,
       scrollController: _scrollController,
       listController: _animatedListController,
     );
   }
 
   @override
-  void dispose(){
-    widget.listenableTree.dispose();
+  void dispose() {
+    listenableTree.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final list = _animatedListController.list;
-    if (list.isEmpty) return SizedBox.shrink();
 
     return AnimatedList(
       key: _listKey,

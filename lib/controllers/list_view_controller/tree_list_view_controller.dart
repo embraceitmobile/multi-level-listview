@@ -3,6 +3,7 @@ import 'package:multi_level_list_view/controllers/animated_list_controller.dart'
 import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
 import 'package:multi_level_list_view/node/map_node.dart';
 import 'package:multi_level_list_view/node/node.dart';
+import 'package:multi_level_list_view/tree/base/i_listenable_tree.dart';
 import 'package:multi_level_list_view/tree/base/i_tree.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'base/i_tree_list_view_controller.dart';
@@ -16,10 +17,10 @@ class TreeListViewController<T extends Node<T>>
   TreeListViewController();
 
   void attach(
-      {@required ITree<T> tree,
+      {@required IListenableTree<T> tree,
       @required AnimatedListController listController,
       @required AutoScrollController scrollController}) {
-    _listenableTree = ListenableTree(tree);
+    _listenableTree = tree;
     _listController = listController;
     _scrollController = scrollController;
   }
