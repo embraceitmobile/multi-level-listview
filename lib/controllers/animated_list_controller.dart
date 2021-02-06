@@ -2,45 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_list.dart';
 import 'package:multi_level_list_view/listenable_collections/listenable_tree.dart';
 import 'package:multi_level_list_view/node/node.dart';
+import 'package:multi_level_list_view/tree/base/i_listenable_tree.dart';
 import 'package:multi_level_list_view/tree/tree_update_notifier.dart';
 
 class AnimatedListController<T extends Node<T>> {
   static const TAG = "AnimatedListController";
 
   final GlobalKey<AnimatedListState> _listKey;
-  final TreeUpdateNotifier<T> _treeUpdateNotifier;
   final dynamic _removedItemBuilder;
-  final ListenableList<Node<T>> _items;
+  final IListenableTree<T> _listenableTree;
+  final List<Node<T>> _flatList;
 
   AnimatedListController(
       {@required GlobalKey<AnimatedListState> listKey,
       @required dynamic removedItemBuilder,
-      @required ListenableTree<T> tree})
+      @required IListenableTree<T> tree})
       : _listKey = listKey,
-        _items = ListenableList.from(tree.root.childrenAsList),
+        _listenableTree = tree,
         _removedItemBuilder = removedItemBuilder,
-        _treeUpdateNotifier = tree,
+        _flatList = List.from(tree.root.childrenAsList),
         assert(listKey != null),
         assert(removedItemBuilder != null) {
-    _treeUpdateNotifier.addedNodes.listen(handleAddItemsEvent);
-    _treeUpdateNotifier.removedNodes.listen(handleRemoveItemsEvent);
-    _treeUpdateNotifier.insertedNodes.listen(handleInsertItemsEvent);
+    _listenableTree.addedNodes.listen(handleAddItemsEvent);
+    _listenableTree.removedNodes.listen(handleRemoveItemsEvent);
+    _listenableTree.insertedNodes.listen(handleInsertItemsEvent);
   }
 
-  ListenableList<Node<T>> get list => _items;
+  List<Node<T>> get list => _flatList;
 
-  int get length => _items.length;
+  int get length => _listenableTree.length;
 
   AnimatedListState get _animatedList => _listKey.currentState;
 
   int indexOf(T item) =>
-      _items.indexWhere((e) => e.path == item.path && e.key == item.key);
+      _flatList.indexWhere((e) => e.path == item.path && e.key == item.key);
 
   int indexFromKeyAndPath(String key, String path) =>
-      _items.indexWhere((e) => e.path == path && e.key == key);
+      _flatList.indexWhere((e) => e.path == path && e.key == key);
 
   void insert(int index, Node<T> item) {
-    _items.insert(index, item);
+    _flatList.insert(index, item);
     _animatedList.insertItem(index);
   }
 
@@ -51,7 +52,7 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   Node<T> removeAt(int index) {
-    final removedItem = _items.removeAt(index);
+    final removedItem = _flatList.removeAt(index);
     if (removedItem != null) {
       _animatedList.removeItem(
         index,
@@ -72,7 +73,7 @@ class AnimatedListController<T extends Node<T>> {
   }
 
   void collapseNode(Node<T> item) {
-    final removeItems = _items.where((element) => element.path
+    final removeItems = _flatList.where((element) => element.path
         .startsWith('${item.path}${Node.PATH_SEPARATOR}${item.key}'));
 
     removeAll(removeItems.toList());
@@ -94,12 +95,17 @@ class AnimatedListController<T extends Node<T>> {
 
   @visibleForTesting
   void handleAddItemsEvent(NodeAddEvent<T> event) {
+    if (event.path == null) {
+      insertAll(_flatList.length, event.items);
+      return;
+    }
+
     final parentKey = event.path.split(Node.PATH_SEPARATOR).last;
     final parentIndex =
-        _items.indexWhere((element) => element.key == parentKey);
+        _flatList.indexWhere((element) => element.key == parentKey);
     if (parentIndex < 0) return;
 
-    final parentNode = _items[parentIndex];
+    final parentNode = _flatList[parentIndex];
     for (final item in event.items) {
       item.path = event.path;
     }
@@ -116,10 +122,10 @@ class AnimatedListController<T extends Node<T>> {
   @visibleForTesting
   void handleInsertItemsEvent(NodeInsertEvent<T> event) {
     //check if the path is visible in the animatedList
-    if (_items.any((item) => item.path == event.path)) {
+    if (_flatList.any((item) => item.path == event.path)) {
       // get the last child in the path
       final firstChild =
-          _items.firstWhere((element) => element.path == event.path);
+          _flatList.firstWhere((element) => element.path == event.path);
       // for visible path, add the items in the flatList and the animatedList
       insertAll(indexOf(firstChild) + event.index, event.items);
     }
@@ -129,12 +135,12 @@ class AnimatedListController<T extends Node<T>> {
   void handleRemoveItemsEvent(NodeRemoveEvent event) {
     for (final key in event.keys) {
       //if item is in the root of the list, then remove the item
-      if (_items.any((item) => item.key == key)) {
+      if (_flatList.any((item) => item.key == key)) {
         final removedItem = removeAt(indexFromKeyAndPath(key, event.path));
 
         if (removedItem.isExpanded) {
           //if the item is expanded, also remove its children
-          removeAll(_items
+          removeAll(_flatList
               .where((element) =>
                   element.path.startsWith(removedItem.childrenPath))
               .toList());
