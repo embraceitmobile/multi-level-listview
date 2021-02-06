@@ -30,7 +30,7 @@ class AnimatedListController<T extends Node<T>> {
 
   List<Node<T>> get list => _flatList;
 
-  int get length => _listenableTree.length;
+  int get length => _flatList.length;
 
   AnimatedListState get _animatedList => _listKey.currentState;
 
