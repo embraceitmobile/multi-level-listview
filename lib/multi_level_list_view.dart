@@ -162,15 +162,8 @@ class _MultiLevelListView<T extends Node<T>>
         ? Tree<T>()
         : Tree<T>.fromMap(widget.initialItems));
 
-    listenableTree.addedNodes.listen((event) {
-      print("Nodes added: of type $event, ${event.items.length}");
-      _handleItemAdditionEvent(event);
-    });
-
-    listenableTree.insertedNodes.listen((event) {
-      print("Nodes removed: of type $event, ${event.items}");
-      _handleItemInsertEvent(event);
-    });
+    listenableTree.addedNodes.listen(_handleItemAdditionEvent);
+    listenableTree.insertedNodes.listen(_handleItemInsertEvent);
   }
 
   @override
