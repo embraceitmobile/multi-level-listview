@@ -21,7 +21,7 @@ Tree get mockTreeWithIds => Tree()
       ]),
   ]);
 
-MapNode get mockMapNode => MapNode()
+MapNode get mockMapNode => MapNode("00")
   ..addAll([
     MapNode("0A")..add(MapNode("0A1A")),
     MapNode("0B"),
